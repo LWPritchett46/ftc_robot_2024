@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotHover;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotLow;
-import static org.firstinspires.ftc.teamcode.Utility.wrapIMU;
+import static org.firstinspires.ftc.teamcode.util.Utility.wrapIMU;
 
 import android.util.Size;
 

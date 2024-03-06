@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import static android.os.SystemClock.sleep;
-
-import static org.firstinspires.ftc.teamcode.Utility.expo;
+import static org.firstinspires.ftc.teamcode.util.Utility.expo;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class AsyncRoutines extends Thread{
 

@@ -78,7 +78,7 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
     public static PIDCoefficients FIXTURN_PID = new PIDCoefficients(1.3, 0.002, .1);
     //public static PIDCoefficients Y_PID = new PIDCoefficients(12, 0, 0);
 
-    public  int USE_IMU=0;
+    public boolean USE_IMU = false;
     public static double LATERAL_MULTIPLIER = 1.3;////1.1; //was 2.05;
     private IMU gyro;
     public static double VX_WEIGHT = .7;
@@ -208,23 +208,27 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
         //leftFront.setDirection(DcMotor.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        /*
-        if (USE_IMU==1) {
+
+        if (USE_IMU) {
             setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap,this));
         } else {
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
-        }*/
+        }
     //initLocalizer(hardwareMap,false);
     }
 
-
+/*
     public void initLocalizer (HardwareMap hardwareMap,boolean useIMU){
 
 
-        if (useIMU) USE_IMU=1;
-        else USE_IMU=0;
-        if (USE_IMU==1)
+        if (useIMU){
+            USE_IMU = true;
+        }
+        else {
+            USE_IMU = false;
+        }
+        if (USE_IMU)
         {
 
             // gyro = new GyroAnalog(hardwareMap);
@@ -238,7 +242,7 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
             //imu1 = hardwareMap.get(BNO055IMU.class, "imu1");
             //imu1.initialize(parameters);
         }
-        if (USE_IMU==1) {
+        if (USE_IMU) {
             setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap,this));
         } else {
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
@@ -247,7 +251,7 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
 
 
     }
-
+*/
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, velConstraint, accelConstraint);
@@ -336,7 +340,9 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
     }
 
     public void update() {
-        if (USE_IMU==1) isIMUread=false;
+        if (USE_IMU){
+            isIMUread=false;
+        }
         updatePoseEstimate();
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
@@ -627,7 +633,7 @@ public class SampleMecanumDrive extends com.acmerobotics.roadrunner.drive.Mecanu
             return 0;
         }
 */
-        if (USE_IMU==1) {
+        if (USE_IMU) {
            // System.out.println("gyro "+Math.toDegrees(gyro.readGyro()));
             //return gyro.readGyro();
            if (isIMUread) {

@@ -4,19 +4,14 @@ import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.armLow;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeRight;
-import static org.firstinspires.ftc.teamcode.TeleOp360Mov.intakeFold;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.intakeOpen;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
-import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotHover;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotLow;
-import static org.firstinspires.ftc.teamcode.Utility.average;
 
-import android.annotation.SuppressLint;
 import android.util.Size;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,11 +22,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
