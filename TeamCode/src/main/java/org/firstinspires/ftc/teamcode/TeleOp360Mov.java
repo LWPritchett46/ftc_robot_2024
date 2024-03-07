@@ -290,10 +290,10 @@ public class TeleOp360Mov extends OpMode {
         // Lift Controls ---------------------------------------------------------------------------
         if (gamepad1.dpad_up){
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.lift.setVelocity(-1000);
+            robot.lift.setVelocity(-1000000);
         }
         else if (gamepad1.dpad_down){
-            robot.lift.setVelocity(1000);
+            robot.lift.setVelocity(1000000);
             robot.isHolding = false;
             residualPower = 0;
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -47,13 +47,13 @@ public class HardwarePushbot {
     static final double DRIVE_GEAR_REDUCTION = 0.4;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_CM = 10.16;     // For figuring circumference
     static final double COUNTS_PER_CM = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * Math.PI) * correction;
-    static final double DRIVE_SPEED = 2300;
+    static final double DRIVE_SPEED = 2700;
     static final double TURN_SPEED_MODIFIER = 0.7;
     static final double ANGLE_TOLERANCE = 1;
 
     static final double joystickExp = 1.5;
 
-    public static final int playOffset = -320;
+    public static final int playOffset = -100;
 
     public int armHover = 1330 + playOffset;
 
