@@ -35,10 +35,10 @@ public class TeleOp360Mov extends OpMode {
     static float intakeFold = 0.80f;
     static float intakeOpen = 0.30f;
 
-    public static double closeRight = 0;
+    public static double closeRight = 0.5;
     public static double openRight = 1;
 
-    public static double closeLeft = 0.25;
+    public static double closeLeft = 0.55;
     public static double openLeft = 0;
 
     public static double rotGrab = 0.75;
