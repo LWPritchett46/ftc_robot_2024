@@ -44,7 +44,7 @@ public class TeleOp360Mov extends OpMode {
     public static double rotGrab = 0.75;
     public static double rotHover = rotGrab + 0.02;
     public static double rotHigh = 0;
-    public static double rotLow = 0.35;
+    public static double rotLow = 0.40;
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
     public static int armLow = 4200 + HardwarePushbot.playOffset;
@@ -52,7 +52,9 @@ public class TeleOp360Mov extends OpMode {
     public double residualPower = 0;
 
     public static int upperLimit = 4200 + HardwarePushbot.playOffset;
-    public static int lowerLimit = 3550 + HardwarePushbot.playOffset;
+    public static int lowerLimit = 3000 + HardwarePushbot.playOffset;
+
+    boolean isDown = true;
 
     public static int interval = 400;
 
@@ -184,15 +186,26 @@ public class TeleOp360Mov extends OpMode {
 //        }
 
         // Arm Control -----------------------------------------------------------------------------
-        if (gamepad2.b){
+        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.B)){
             // Low Position
 
-            robot.brake();
+            if(robot.arm.getCurrentPosition() < lowerLimit - 500) {
 
-            robot.armUp(armLow);
-            robot.isHolding = false;
-            robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            robot.claw_rot.setPosition(rotLow);
+                robot.claw_rot.setPosition(rotLow);
+                robot.brake();
+                robot.armUp(armLow);
+                robot.isHolding = false;
+                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+            else {
+                robot.claw_rot.setPosition(rotGrab);
+                //sleep(50);
+                robot.brake();
+                //sleep(50);
+                robot.armDown();
+                robot.claw_right.setPosition(closeRight);
+                robot.claw_left.setPosition(closeLeft);
+            }
 
             //residualPower = 0.07;
 
@@ -201,33 +214,45 @@ public class TeleOp360Mov extends OpMode {
 //            routines.start();
         }
 
-        if (gamepad2.y && robot.arm.getCurrentPosition() > lowerLimit + interval){
+        if (gamepad2.y && robot.arm.getCurrentPosition() > lowerLimit){
             // Move up
 
-            robot.brake();
-
-            robot.armUp(robot.arm.getCurrentPosition() - interval);
+            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.arm.setVelocity(-1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.claw_rot.setPosition((rotLow/650) * (robot.arm.getCurrentPosition() - armHigh));
+            robot.claw_rot.setPosition((rotLow/1200) * (robot.arm.getCurrentPosition() - lowerLimit));
 
             residualPower = 0;
 
 //            routines.setRoutine(0);
 //            routines.start();
         }
-        if (gamepad2.a && robot.arm.getCurrentPosition() < upperLimit - interval) {
+        else if (gamepad2.a && robot.arm.getCurrentPosition() < upperLimit) {
             // Move down
 
-            robot.brake();
-
-            robot.armUp(robot.arm.getCurrentPosition() + interval);
+            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.arm.setVelocity(1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.claw_rot.setPosition((rotLow/650) * (robot.arm.getCurrentPosition() - armHigh));
+            robot.claw_rot.setPosition((rotLow/1200) * (robot.arm.getCurrentPosition() - lowerLimit));
 
             residualPower = 0;
 
 //            routines.setRoutine(2);
 //            routines.start();
+        }
+        else{
+
+            if (robot.arm.getCurrentPosition() > lowerLimit - 500) {
+                robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.arm.setPower(0);
+                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                robot.claw_rot.setPosition((rotLow / 1200) * (robot.arm.getCurrentPosition() - lowerLimit));
+
+                residualPower = 0;
+            }
+            else{
+                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
         }
 
 //        if (gamepad2.x) {
@@ -292,7 +317,7 @@ public class TeleOp360Mov extends OpMode {
         // Lift Controls ---------------------------------------------------------------------------
         if (gamepad1.dpad_up){
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.lift.setVelocity(-1000000);
+            robot.lift.setVelocity(-1000);
         }
         else if (gamepad1.dpad_down){
             robot.lift.setVelocity(1000000);
