@@ -51,7 +51,10 @@ public class TeleOp360Mov extends OpMode {
 
     public double residualPower = 0;
 
+    public static int upperLimit = 4200 + HardwarePushbot.playOffset;
+    public static int lowerLimit = 3550 + HardwarePushbot.playOffset;
 
+    public static int interval = 400;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -60,6 +63,7 @@ public class TeleOp360Mov extends OpMode {
     public void init() {
         robot.init(hardwareMap);
         armHigh = robot.armHover + 2300;
+        robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         routines = new AsyncRoutines(0, robot, this);
 
@@ -180,21 +184,6 @@ public class TeleOp360Mov extends OpMode {
 //        }
 
         // Arm Control -----------------------------------------------------------------------------
-        if (gamepad2.a) {
-            // High Position
-
-            robot.brake();
-
-            robot.armUp(armHigh);
-
-            robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.claw_rot.setPosition(rotHigh);
-
-            residualPower = 0;
-
-//            routines.setRoutine(2);
-//            routines.start();
-        }
         if (gamepad2.b){
             // Low Position
 
@@ -212,43 +201,56 @@ public class TeleOp360Mov extends OpMode {
 //            routines.start();
         }
 
-        if (gamepad2.y){
-            // Hover Position
+        if (gamepad2.y && robot.arm.getCurrentPosition() > lowerLimit + interval){
+            // Move up
 
             robot.brake();
 
-            robot.claw_rot.setPosition(rotHover);
-            sleep(100);
+            robot.armUp(robot.arm.getCurrentPosition() - interval);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.armUp(robot.armHover);
+            robot.claw_rot.setPosition((rotLow/650) * (robot.arm.getCurrentPosition() - armHigh));
 
-            residualPower = 0.05;
+            residualPower = 0;
 
 //            routines.setRoutine(0);
 //            routines.start();
         }
-
-        if (gamepad2.x) {
-            // Grabbing Position
+        if (gamepad2.a && robot.arm.getCurrentPosition() < upperLimit - interval) {
+            // Move down
 
             robot.brake();
 
-            robot.claw_rot.setPosition(rotGrab);
-            robot.armDown();
-            robot.claw_right.setPosition(closeRight);
-            robot.claw_left.setPosition(closeLeft);
-
-            sleep(80);
-
-            robot.claw_rot.setPosition(rotHover);
+            robot.armUp(robot.arm.getCurrentPosition() + interval);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.armUp(robot.armHover);
+            robot.claw_rot.setPosition((rotLow/650) * (robot.arm.getCurrentPosition() - armHigh));
 
-            residualPower = 0.05;
+            residualPower = 0;
 
-//            routines.setRoutine(1);
+//            routines.setRoutine(2);
 //            routines.start();
         }
+
+//        if (gamepad2.x) {
+//            // Grabbing Position
+//
+//            robot.brake();
+//
+//            robot.claw_rot.setPosition(rotGrab);
+//            robot.armDown();
+//            robot.claw_right.setPosition(closeRight);
+//            robot.claw_left.setPosition(closeLeft);
+//
+//            sleep(80);
+//
+//            robot.claw_rot.setPosition(rotHover);
+//            robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            robot.armUp(robot.armHover);
+//
+//            residualPower = 0.05;
+//
+////            routines.setRoutine(1);
+////            routines.start();
+//        }
 
 
         // Unfold Routine --------------------------------------------------------------------------
