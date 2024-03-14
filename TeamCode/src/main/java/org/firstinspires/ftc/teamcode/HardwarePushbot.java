@@ -35,6 +35,7 @@ public class HardwarePushbot {
     public Servo claw_left;
     public Servo launcher;
     public Servo intake_rot;
+    public Servo left_wiper;
 
     public IMU imu;
 
@@ -84,6 +85,9 @@ public class HardwarePushbot {
         claw_right = hwMap.get(Servo.class, "claw_right");
         claw_left = hwMap.get(Servo.class, "claw_left");
         intake_rot = hwMap.get(Servo.class, "intake_rot");
+
+        left_wiper = hwMap.get(Servo.class, "left_wiper");
+
 
 
 
