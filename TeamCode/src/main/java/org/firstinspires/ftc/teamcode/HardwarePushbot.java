@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -64,7 +65,10 @@ public class HardwarePushbot {
 
     public static final int playOffset = -100;
 
-    public int armHover = 1330 + playOffset;
+    public int armHover = 1000 + playOffset;
+
+    public TeleOp360Mov.MovingState movingState = TeleOp360Mov.MovingState.NO_MOVE;
+
 
     public boolean isHolding = false;
     public int holdPos = 0;
@@ -604,8 +608,8 @@ public class HardwarePushbot {
 
     public void armDown() {
         //Open claw
-        this.claw_right.setPosition(1);
-        this.claw_left.setPosition(0.1);
+//        this.claw_right.setPosition(1);
+//        this.claw_left.setPosition(0.1);
         isHolding = false;
         this.arm.setTargetPosition(0);
         this.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -674,6 +678,29 @@ public class HardwarePushbot {
 //        while (elapsedTime.time(TimeUnit.MILLISECONDS) < time){
 //            continue;
 //        }
+    }
+
+    public void tick(){
+        switch (movingState){
+            case MOVE_UP:
+                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 700){
+                    arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    arm.setPower(0);
+                    movingState = TeleOp360Mov.MovingState.NO_MOVE;
+                }
+                break;
+            case MOVE_DOWN:
+                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 500){
+                    arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    arm.setPower(0);
+                    movingState = TeleOp360Mov.MovingState.NO_MOVE;
+                }
+                break;
+            case NO_MOVE:
+                break;
+        }
     }
 
     // Write Autonomous Routine Stages Here!

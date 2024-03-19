@@ -39,29 +39,30 @@ public class TeleOp360Mov extends OpMode {
     static float intakeFold = 0.80f;
     static float intakeOpen = 0.30f;
 
-    public static double closeRight = 0.5;
-    public static double openRight = 0.75;
+    public static double closeRight = 0.45;
+    public static double openRight = 0.57;
 
-    public static double closeLeft = 0.75;
-    public static double openLeft = 0.47;
+    public static double closeLeft = 0.39;
+    public static double openLeft = 0.28;
 
-    public static double rotGrab = 0.60;
-    public static double rotHover = rotGrab + 0.02;
+    public static double rotGrab = 0.97;
+    public static double rotHover = rotGrab;
     public static double rotHigh = 0;
-    public static double rotLow = 0.35;
+    public static double rotLow = 0.50;
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
-    public static int armLow = 4200 + HardwarePushbot.playOffset;
+    public static int armLow = 3800 + HardwarePushbot.playOffset;
 
     public double residualPower = 0;
 
-    public static int upperLimit = 4200 + HardwarePushbot.playOffset;
-    public static int lowerLimit = 3000 + HardwarePushbot.playOffset;
+    public static int upperLimit = 3800 + HardwarePushbot.playOffset;
+    public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
 
-    boolean isDown = true;
-
-    public static int interval = 400;
-
+    public enum MovingState{
+        MOVE_UP,
+        MOVE_DOWN,
+        NO_MOVE
+    }
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -100,6 +101,17 @@ public class TeleOp360Mov extends OpMode {
 //        routines.run = true;
 //        routines.setRoutine(4);
 //        routines.start();
+
+        robot.claw_rot.setPosition(rotGrab);
+
+        grabRight = false;
+        grabLeft = false;
+        robot.claw_right.setPosition(closeRight);
+        robot.claw_left.setPosition(closeLeft);
+        sleep(100);
+        robot.claw_right.setPosition(openRight);
+        robot.claw_left.setPosition(openLeft);
+
     }
 
 
@@ -167,12 +179,19 @@ public class TeleOp360Mov extends OpMode {
             //robot.intake_rot.getController().pwmEnable();
 //            sleep(100);
 //            robot.intake_rot.setPosition(intakeFold);
+
+            //robot.claw_rot.setPosition(robot.claw_rot.getPosition() + 0.1);
+            //robot.claw_rot.setPosition(rotLow);
         }
         if (lTriggerReader2.wasJustPressed()){
             robot.left_wiper.setPosition(0.35);
 //            robot.intake_rot.setPosition(intakeOpen);
 //            sleep(500);
 //            robot.intake_rot.getController().pwmDisable();
+
+            //robot.claw_rot.setPosition(robot.claw_rot.getPosition() - 0.1);
+            //robot.claw_rot.setPosition(rotGrab);
+
         }
 
 
@@ -200,18 +219,36 @@ public class TeleOp360Mov extends OpMode {
 
             if(robot.arm.getCurrentPosition() < lowerLimit - 500) {
 
+                grabRight = true;
+                grabLeft = true;
+                robot.claw_right.setPosition(closeRight);
+                robot.claw_left.setPosition(closeLeft);
+                //robot.brake();
+
+                robot.movingState = MovingState.MOVE_UP;
+                robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.arm.setPower(0.8);
+
                 robot.claw_rot.setPosition(rotLow);
-                robot.brake();
-                robot.armUp(armLow);
-                robot.isHolding = false;
                 robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
             else {
+
+                grabRight = true;
+                grabLeft = true;
+                robot.claw_right.setPosition(closeRight);
+                robot.claw_left.setPosition(closeLeft);
                 robot.claw_rot.setPosition(rotGrab);
-                //sleep(50);
-                robot.brake();
-                //sleep(50);
-                robot.armDown();
+                //robot.brake();
+
+                robot.movingState = MovingState.MOVE_DOWN;
+                robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.arm.setPower(-0.8);
+
+//                grabRight = false;
+//                grabLeft = false;
+//                robot.claw_right.setPosition(openRight);
+//                robot.claw_left.setPosition(openLeft);
 //                robot.claw_right.setPosition(closeRight);
 //                robot.claw_left.setPosition(closeLeft);
             }
@@ -251,10 +288,10 @@ public class TeleOp360Mov extends OpMode {
         }
         else{
 
-            if (robot.arm.getCurrentPosition() > lowerLimit - 500) {
+            if (robot.arm.getCurrentPosition() > lowerLimit - 500 && robot.movingState == MovingState.NO_MOVE) {
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.arm.setPower(0);
-                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.claw_rot.setPosition((rotLow / 1200) * (robot.arm.getCurrentPosition() - lowerLimit));
 
                 residualPower = 0;
@@ -264,38 +301,45 @@ public class TeleOp360Mov extends OpMode {
             }
         }
 
-//        if (gamepad2.x) {
-//            // Grabbing Position
-//
-//            robot.brake();
-//
-//            robot.claw_rot.setPosition(rotGrab);
-//            robot.armDown();
-//            robot.claw_right.setPosition(closeRight);
-//            robot.claw_left.setPosition(closeLeft);
-//
-//            sleep(80);
-//
-//            robot.claw_rot.setPosition(rotHover);
-//            robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//            robot.armUp(robot.armHover);
-//
-//            residualPower = 0.05;
-//
-////            routines.setRoutine(1);
-////            routines.start();
-//        }
+        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.X)) {
+            // Grabbing Position
 
+            if (robot.arm.getCurrentPosition() < robot.armHover/2) {
+                grabRight = true;
+                grabLeft = true;
+                robot.claw_right.setPosition(closeRight);
+                robot.claw_left.setPosition(closeLeft);
+                robot.claw_rot.setPosition(rotGrab);
+                robot.brake();
+                sleep(70);
+                robot.claw_rot.setPosition(rotHover);
+                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                robot.armUp(robot.armHover);
 
-        // Unfold Routine --------------------------------------------------------------------------
-        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)){
+                residualPower = 0.05;
+            }
+            else{
+                grabRight = true;
+                grabLeft = true;
+                robot.claw_right.setPosition(closeRight);
+                robot.claw_left.setPosition(closeLeft);
+                robot.claw_rot.setPosition(rotGrab);
+                sleep(50);
+                //sleep(50);
+                robot.brake();
+                //sleep(50);
+                robot.armDown();
+                residualPower = 0.05;
+                grabRight = false;
+                grabLeft = false;
+                robot.claw_right.setPosition(openRight);
+                robot.claw_left.setPosition(openLeft);
+            }
 
-            robot.brake();
-
-            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.unfoldingRoutine();
-            residualPower = 0.05;
+//            routines.setRoutine(1);
+//            routines.start();
         }
+
 
         // GamePad 1 ===============================================================================
 
@@ -376,7 +420,13 @@ public class TeleOp360Mov extends OpMode {
 
         telemetry.addLine();
 
-        telemetry.addData("Wiper Pos", robot.left_wiper.getPosition());
+        telemetry.addData("Claw Rot Pos", robot.claw_rot.getPosition());
+        telemetry.addData("Left Pos", robot.claw_left.getPosition());
+        telemetry.addData("Right Pos", robot.claw_right.getPosition());
+
+        telemetry.addLine();
+
+        telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 
 //        telemetry.addData("Front_Left", robot.left_front.getVelocity());
 //        telemetry.addData("Front_Right", robot.right_front.getVelocity());
@@ -397,6 +447,8 @@ public class TeleOp360Mov extends OpMode {
 //        telemetry.addData("Back_Right", powers[3]);
 
         telemetry.update();
+
+        robot.tick();
 
 //        telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 //        telemetry.addData("Arm Vel", robot.arm.getVelocity());
