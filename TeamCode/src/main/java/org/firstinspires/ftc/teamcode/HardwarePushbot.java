@@ -43,6 +43,7 @@ public class HardwarePushbot {
     public Servo launcher;
     public Servo intake_rot;
     public Servo left_wiper;
+    public Servo right_wiper;
 
     public IMU imu;
 
@@ -114,7 +115,7 @@ public class HardwarePushbot {
         intake_rot = hwMap.get(Servo.class, "intake_rot");
 
         left_wiper = hwMap.get(Servo.class, "left_wiper");
-
+        right_wiper = hwMap.get(Servo.class, "right_wiper");
 
 
 
