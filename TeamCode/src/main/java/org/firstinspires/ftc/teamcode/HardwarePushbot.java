@@ -5,6 +5,11 @@ import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.teamcode.util.Utility.clamp;
 import static org.firstinspires.ftc.teamcode.util.Utility.wrapIMUDeg;
 
+import com.acmerobotics.roadrunner.control.PIDFController;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -16,6 +21,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.util.Utility;
+
+import kotlin.jvm.functions.Function2;
 
 
 public class HardwarePushbot {
@@ -59,6 +66,26 @@ public class HardwarePushbot {
 
     public boolean isHolding = false;
     public int holdPos = 0;
+
+    double kP = 0.5;
+    double kI = 0.5;
+    double kD = 0.5;
+    double kG = 0.5;
+
+    public PIDCoefficients armCoeffs = new PIDCoefficients(kP, kI, kD);
+    public PIDFController armController = new PIDFController(armCoeffs);
+
+    public MotionProfile armProfile1 = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(0, 0, 0),
+            new MotionState(60, 60, 0),
+            25, 40, 100
+    );
+
+    public MotionProfile armProfile2 = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(60, 60, 0),
+            new MotionState(100, 0, 0),
+            25, 20, 100
+    );
 
     HardwareMap hwMap;
 
