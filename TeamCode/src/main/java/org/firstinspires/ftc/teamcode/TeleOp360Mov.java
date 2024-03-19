@@ -175,7 +175,7 @@ public class TeleOp360Mov extends OpMode {
 
 
         if (rTriggerReader2.wasJustPressed()){
-            robot.left_wiper.setPosition(0.9);
+//            robot.left_wiper.setPosition(0.9);
             //robot.intake_rot.getController().pwmEnable();
 //            sleep(100);
 //            robot.intake_rot.setPosition(intakeFold);
@@ -184,7 +184,7 @@ public class TeleOp360Mov extends OpMode {
             //robot.claw_rot.setPosition(rotLow);
         }
         if (lTriggerReader2.wasJustPressed()){
-            robot.left_wiper.setPosition(0.35);
+//            robot.left_wiper.setPosition(0.35);
 //            robot.intake_rot.setPosition(intakeOpen);
 //            sleep(500);
 //            robot.intake_rot.getController().pwmDisable();
@@ -271,7 +271,7 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setVelocity(-1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.claw_rot.setPosition(
-                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
                     * (1.0/180.0)
             );
 
@@ -287,7 +287,7 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setVelocity(1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.claw_rot.setPosition(
-                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
                             * (1.0/180.0)
             );
             residualPower = 0;
@@ -302,7 +302,7 @@ public class TeleOp360Mov extends OpMode {
                 robot.arm.setPower(0);
 //                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.claw_rot.setPosition(
-                        ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                        ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
                                 * (1.0/180.0)
                 );
                 residualPower = 0;
@@ -475,7 +475,7 @@ public class TeleOp360Mov extends OpMode {
 
         if (lTriggerReader1.wasJustPressed()) {
             if (wiperOpenLeft) {
-                robot.left_wiper.setPosition(0.5);
+                robot.left_wiper.setPosition(1);
             } else {
                 robot.left_wiper.setPosition(0);
             }
