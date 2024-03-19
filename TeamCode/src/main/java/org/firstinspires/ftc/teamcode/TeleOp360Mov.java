@@ -24,12 +24,16 @@ public class TeleOp360Mov extends OpMode {
     GamepadEx gamepad1Ex;
     GamepadEx gamepad2Ex;
 
-    TriggerReader rTriggerReader;
-    TriggerReader lTriggerReader;
+    TriggerReader rTriggerReader1;
+    TriggerReader lTriggerReader1;
+
+    TriggerReader rTriggerReader2;
+    TriggerReader lTriggerReader2;
 
     /* 'grab' is helpful to determine whether or not the claws are at a "grabbing" position.
     Depending on the position, the claw will open or close. */
     boolean grabLeft, grabRight = true;
+    boolean wiperOpenLeft, wiperOpenRight = true;
     boolean intaking = false;
 
     static float intakeFold = 0.80f;
@@ -73,8 +77,11 @@ public class TeleOp360Mov extends OpMode {
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
 
-        rTriggerReader = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
-        lTriggerReader = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
+        rTriggerReader1 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
+        lTriggerReader1 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
+
+        rTriggerReader2 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
+        lTriggerReader2 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
     }
 
 
@@ -167,8 +174,8 @@ public class TeleOp360Mov extends OpMode {
 
 
 
-        if (rTriggerReader.wasJustPressed()){
-            //robot.left_wiper.setPosition(0.9);
+        if (rTriggerReader2.wasJustPressed()){
+            robot.left_wiper.setPosition(0.9);
             //robot.intake_rot.getController().pwmEnable();
 //            sleep(100);
 //            robot.intake_rot.setPosition(intakeFold);
@@ -176,8 +183,8 @@ public class TeleOp360Mov extends OpMode {
             //robot.claw_rot.setPosition(robot.claw_rot.getPosition() + 0.1);
             //robot.claw_rot.setPosition(rotLow);
         }
-        if (lTriggerReader.wasJustPressed()){
-            //robot.left_wiper.setPosition(0.35);
+        if (lTriggerReader2.wasJustPressed()){
+            robot.left_wiper.setPosition(0.35);
 //            robot.intake_rot.setPosition(intakeOpen);
 //            sleep(500);
 //            robot.intake_rot.getController().pwmDisable();
@@ -457,6 +464,23 @@ public class TeleOp360Mov extends OpMode {
 //        telemetry.addData("Arm Vel", robot.arm.getVelocity());
 
 
+        if (rTriggerReader1.wasJustPressed()) {
+            if (wiperOpenRight) {
+                robot.right_wiper.setPosition(0.5);
+            } else {
+                robot.right_wiper.setPosition(1);
+            }
+            wiperOpenRight = !wiperOpenRight;
+        }
+
+        if (lTriggerReader1.wasJustPressed()) {
+            if (wiperOpenLeft) {
+                robot.left_wiper.setPosition(0.5);
+            } else {
+                robot.left_wiper.setPosition(0);
+            }
+        }
+
 
         // Toggle Timers & HoldPos -----------------------------------------------------------------
 
@@ -467,8 +491,11 @@ public class TeleOp360Mov extends OpMode {
         gamepad1Ex.readButtons();
         gamepad2Ex.readButtons();
 
-        rTriggerReader.readValue();
-        lTriggerReader.readValue();
+        rTriggerReader1.readValue();
+        lTriggerReader1.readValue();
+
+        rTriggerReader2.readValue();
+        lTriggerReader2.readValue();
     }
 
 
