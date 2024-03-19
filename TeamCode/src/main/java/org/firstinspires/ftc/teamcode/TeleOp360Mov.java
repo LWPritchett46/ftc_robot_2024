@@ -220,6 +220,8 @@ public class TeleOp360Mov extends OpMode {
 
                 robot.movingState = MovingState.MOVE_UP;
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.isHolding = false;
+                residualPower = 0;
                 robot.arm.setPower(0.8);
 
                 robot.claw_rot.setPosition(rotLow);
@@ -236,6 +238,8 @@ public class TeleOp360Mov extends OpMode {
 
                 robot.movingState = MovingState.MOVE_DOWN;
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.isHolding = false;
+                residualPower = 0;
                 robot.arm.setPower(-0.8);
 
 //                grabRight = false;
@@ -259,7 +263,10 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.arm.setVelocity(-1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.claw_rot.setPosition((rotLow/1200) * (robot.arm.getCurrentPosition() - lowerLimit));
+            robot.claw_rot.setPosition(
+                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                    * (1.0/180.0)
+            );
 
             residualPower = 0;
 
@@ -272,8 +279,10 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.arm.setVelocity(1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.claw_rot.setPosition((rotLow/1200) * (robot.arm.getCurrentPosition() - lowerLimit));
-
+            robot.claw_rot.setPosition(
+                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                            * (1.0/180.0)
+            );
             residualPower = 0;
 
 //            routines.setRoutine(2);
@@ -285,8 +294,10 @@ public class TeleOp360Mov extends OpMode {
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.arm.setPower(0);
 //                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                robot.claw_rot.setPosition((rotLow / 1200) * (robot.arm.getCurrentPosition() - lowerLimit));
-
+                robot.claw_rot.setPosition(
+                        ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 90)
+                                * (1.0/180.0)
+                );
                 residualPower = 0;
             }
             else{
@@ -308,7 +319,6 @@ public class TeleOp360Mov extends OpMode {
                 robot.claw_rot.setPosition(rotHover);
                 robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.armUp(robot.armHover);
-
                 residualPower = 0.05;
             }
             else{
