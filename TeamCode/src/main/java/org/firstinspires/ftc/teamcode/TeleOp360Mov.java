@@ -36,15 +36,15 @@ public class TeleOp360Mov extends OpMode {
     static float intakeOpen = 0.30f;
 
     public static double closeRight = 0.5;
-    public static double openRight = 1;
+    public static double openRight = 0.75;
 
-    public static double closeLeft = 0.55;
-    public static double openLeft = 0;
+    public static double closeLeft = 0.75;
+    public static double openLeft = 0.47;
 
-    public static double rotGrab = 0.75;
+    public static double rotGrab = 0.60;
     public static double rotHover = rotGrab + 0.02;
     public static double rotHigh = 0;
-    public static double rotLow = 0.40;
+    public static double rotLow = 0.35;
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
     public static int armLow = 4200 + HardwarePushbot.playOffset;
@@ -156,14 +156,16 @@ public class TeleOp360Mov extends OpMode {
 
 
         if (rTriggerReader.wasJustPressed()){
+            robot.left_wiper.setPosition(0.9);
             //robot.intake_rot.getController().pwmEnable();
-            sleep(100);
-            robot.intake_rot.setPosition(intakeFold);
+//            sleep(100);
+//            robot.intake_rot.setPosition(intakeFold);
         }
         if (lTriggerReader.wasJustPressed()){
-            robot.intake_rot.setPosition(intakeOpen);
-            sleep(500);
-            robot.intake_rot.getController().pwmDisable();
+            robot.left_wiper.setPosition(0.35);
+//            robot.intake_rot.setPosition(intakeOpen);
+//            sleep(500);
+//            robot.intake_rot.getController().pwmDisable();
         }
 
 
@@ -203,8 +205,8 @@ public class TeleOp360Mov extends OpMode {
                 robot.brake();
                 //sleep(50);
                 robot.armDown();
-                robot.claw_right.setPosition(closeRight);
-                robot.claw_left.setPosition(closeLeft);
+//                robot.claw_right.setPosition(closeRight);
+//                robot.claw_left.setPosition(closeLeft);
             }
 
             //residualPower = 0.07;
@@ -365,7 +367,9 @@ public class TeleOp360Mov extends OpMode {
 
         telemetry.addData("Launcher Pos", robot.launcher.getPosition());
 
-        //telemetry.addLine();
+        telemetry.addLine();
+
+        telemetry.addData("Wiper Pos", robot.left_wiper.getPosition());
 
 //        telemetry.addData("Front_Left", robot.left_front.getVelocity());
 //        telemetry.addData("Front_Right", robot.right_front.getVelocity());
