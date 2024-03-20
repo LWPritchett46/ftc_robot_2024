@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import static org.firstinspires.ftc.teamcode.util.Utility.clamp;
 import static org.firstinspires.ftc.teamcode.util.Utility.expo;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -48,7 +49,15 @@ public class TeleOp360Mov extends OpMode {
     public static double rotGrab = 0.97;
     public static double rotHover = rotGrab;
     public static double rotHigh = 0;
-    public static double rotLow = 0.50;
+    public static double rotLow = 0.65;
+
+    public static float rWiperStow = 1.0f;
+    public static float rWiperOpen = 0.1f;
+    public static float rWiperGrab = 0.65f;
+
+    public static float lWiperStow = 0.1f;
+    public static float lWiperOpen = 1.0f;
+    public static float lWiperGrab = 0.55f;
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
     public static int armLow = 3800 + HardwarePushbot.playOffset;
@@ -57,6 +66,7 @@ public class TeleOp360Mov extends OpMode {
 
     public static int upperLimit = 3800 + HardwarePushbot.playOffset;
     public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
+    public boolean armDeployed = false;
 
     public enum MovingState{
         MOVE_UP,
@@ -77,8 +87,8 @@ public class TeleOp360Mov extends OpMode {
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
 
-        rTriggerReader1 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
-        lTriggerReader1 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
+        rTriggerReader1 = new TriggerReader(gamepad1Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
+        lTriggerReader1 = new TriggerReader(gamepad1Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
 
         rTriggerReader2 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.RIGHT_TRIGGER);
         lTriggerReader2 = new TriggerReader(gamepad2Ex, GamepadKeys.Trigger.LEFT_TRIGGER);
@@ -175,7 +185,7 @@ public class TeleOp360Mov extends OpMode {
 
 
         if (rTriggerReader2.wasJustPressed()){
-//            robot.left_wiper.setPosition(0.9);
+            //robot.left_wiper.setPosition(0.9);
             //robot.intake_rot.getController().pwmEnable();
 //            sleep(100);
 //            robot.intake_rot.setPosition(intakeFold);
@@ -184,7 +194,7 @@ public class TeleOp360Mov extends OpMode {
             //robot.claw_rot.setPosition(rotLow);
         }
         if (lTriggerReader2.wasJustPressed()){
-//            robot.left_wiper.setPosition(0.35);
+            //robot.left_wiper.setPosition(0.35);
 //            robot.intake_rot.setPosition(intakeOpen);
 //            sleep(500);
 //            robot.intake_rot.getController().pwmDisable();
@@ -217,7 +227,7 @@ public class TeleOp360Mov extends OpMode {
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.B)){
             // Low Position
 
-            if(robot.arm.getCurrentPosition() < lowerLimit - 500) {
+            if(!armDeployed) {
 
                 grabRight = true;
                 grabLeft = true;
@@ -231,8 +241,9 @@ public class TeleOp360Mov extends OpMode {
                 residualPower = 0;
                 robot.arm.setPower(0.8);
 
-                robot.claw_rot.setPosition(rotLow);
+                //robot.claw_rot.setPosition(rotLow);
                 robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                armDeployed=true;
             }
             else {
 
@@ -248,6 +259,7 @@ public class TeleOp360Mov extends OpMode {
                 robot.isHolding = false;
                 residualPower = 0;
                 robot.arm.setPower(-0.8);
+                armDeployed=true;
 
 //                grabRight = false;
 //                grabLeft = false;
@@ -270,10 +282,13 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.arm.setVelocity(-1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            robot.claw_rot.setPosition(
+//                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
+//                    * (1.0/180.0)
+//            );
             robot.claw_rot.setPosition(
-                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
-                    * (1.0/180.0)
-            );
+                    ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                            (upperLimit-lowerLimit)) * (rotLow-rotHigh));
 
             residualPower = 0;
 
@@ -287,9 +302,8 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setVelocity(1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.claw_rot.setPosition(
-                    ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
-                            * (1.0/180.0)
-            );
+                    ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                            (upperLimit-lowerLimit)) * (rotLow-rotHigh));
             residualPower = 0;
 
 //            routines.setRoutine(2);
@@ -297,14 +311,13 @@ public class TeleOp360Mov extends OpMode {
         }
         else{
 
-            if (robot.arm.getCurrentPosition() > lowerLimit - 500 && robot.movingState == MovingState.NO_MOVE) {
+            if (armDeployed && robot.movingState == MovingState.NO_MOVE) {
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.arm.setPower(0);
 //                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.claw_rot.setPosition(
-                        ((((upperLimit - lowerLimit)/85.0) * robot.arm.getCurrentPosition()) + 180)
-                                * (1.0/180.0)
-                );
+                        ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                                (upperLimit-lowerLimit)) * (rotLow-rotHigh));
                 residualPower = 0;
             }
             else{
@@ -430,9 +443,13 @@ public class TeleOp360Mov extends OpMode {
 
         telemetry.addLine();
 
-        telemetry.addData("Claw Rot Pos", robot.claw_rot.getPosition());
-        telemetry.addData("Left Pos", robot.claw_left.getPosition());
-        telemetry.addData("Right Pos", robot.claw_right.getPosition());
+        telemetry.addData("Left Wiper", robot.left_wiper.getPosition());
+        telemetry.addData("Right Wiper", robot.right_wiper.getPosition());
+
+
+//        telemetry.addData("Claw Rot Pos", robot.claw_rot.getPosition());
+//        telemetry.addData("Left Pos", robot.claw_left.getPosition());
+//        telemetry.addData("Right Pos", robot.claw_right.getPosition());
 
         telemetry.addLine();
 
@@ -465,20 +482,23 @@ public class TeleOp360Mov extends OpMode {
 
 
         if (rTriggerReader1.wasJustPressed()) {
+
             if (wiperOpenRight) {
-                robot.right_wiper.setPosition(0.5);
+                robot.right_wiper.setPosition(rWiperGrab);
             } else {
-                robot.right_wiper.setPosition(1);
+                robot.right_wiper.setPosition(rWiperOpen);
             }
             wiperOpenRight = !wiperOpenRight;
         }
 
         if (lTriggerReader1.wasJustPressed()) {
+
             if (wiperOpenLeft) {
-                robot.left_wiper.setPosition(1);
+                robot.left_wiper.setPosition(lWiperGrab);
             } else {
-                robot.left_wiper.setPosition(0);
+                robot.left_wiper.setPosition(lWiperOpen);
             }
+            wiperOpenLeft = !wiperOpenLeft;
         }
 
 

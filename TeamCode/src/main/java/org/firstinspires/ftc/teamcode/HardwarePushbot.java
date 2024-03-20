@@ -683,9 +683,10 @@ public class HardwarePushbot {
     public void tick(){
         switch (movingState){
             case MOVE_UP:
-                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 500){
+                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 700){
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    claw_rot.setPosition(TeleOp360Mov.rotLow);
                     arm.setPower(0);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;
                 }
