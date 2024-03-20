@@ -48,7 +48,7 @@ public class TeleOp360Mov extends OpMode {
 
     public static double rotGrab = 0.97;
     public static double rotHover = rotGrab;
-    public static double rotHigh = 0;
+    public static double rotHigh = 0.25;
     public static double rotLow = 0.65;
 
     public static float rWiperStow = 1.0f;
@@ -64,7 +64,7 @@ public class TeleOp360Mov extends OpMode {
 
     public double residualPower = 0;
 
-    public static int upperLimit = 3800 + HardwarePushbot.playOffset;
+    public static int upperLimit = 4000 + HardwarePushbot.playOffset;
     public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
     public boolean armDeployed = false;
 
@@ -259,7 +259,7 @@ public class TeleOp360Mov extends OpMode {
                 robot.isHolding = false;
                 residualPower = 0;
                 robot.arm.setPower(-0.8);
-                armDeployed=true;
+                armDeployed=false;
 
 //                grabRight = false;
 //                grabLeft = false;
@@ -287,8 +287,8 @@ public class TeleOp360Mov extends OpMode {
 //                    * (1.0/180.0)
 //            );
             robot.claw_rot.setPosition(
-                    ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
-                            (upperLimit-lowerLimit)) * (rotLow-rotHigh));
+                    (rotHigh + ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                            (upperLimit-lowerLimit)) * (rotLow-rotHigh)));
 
             residualPower = 0;
 
@@ -302,8 +302,8 @@ public class TeleOp360Mov extends OpMode {
             robot.arm.setVelocity(1000);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.claw_rot.setPosition(
-                    ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
-                            (upperLimit-lowerLimit)) * (rotLow-rotHigh));
+                    (rotHigh + ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                            (upperLimit-lowerLimit)) * (rotLow-rotHigh)));
             residualPower = 0;
 
 //            routines.setRoutine(2);
@@ -316,8 +316,8 @@ public class TeleOp360Mov extends OpMode {
                 robot.arm.setPower(0);
 //                robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.claw_rot.setPosition(
-                        ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
-                                (upperLimit-lowerLimit)) * (rotLow-rotHigh));
+                        (rotHigh + ((clamp(robot.arm.getCurrentPosition(), upperLimit, lowerLimit) - lowerLimit)/
+                                (upperLimit-lowerLimit)) * (rotLow-rotHigh)));
                 residualPower = 0;
             }
             else{
