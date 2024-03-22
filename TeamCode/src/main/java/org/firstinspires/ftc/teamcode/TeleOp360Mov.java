@@ -13,6 +13,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 @TeleOp(name="TeleOp Program", group="TeleOp")
 
@@ -46,7 +48,7 @@ public class TeleOp360Mov extends OpMode {
     public static double closeLeft = 0.39;
     public static double openLeft = 0.28;
 
-    public static double rotGrab = 0.97;
+    public static double rotGrab = 1;
     public static double rotHover = rotGrab;
     public static double rotHigh = 0.25;
     public static double rotLow = 0.65;
@@ -413,30 +415,22 @@ public class TeleOp360Mov extends OpMode {
             robot.holdPos -= 25;
         }
 
-//        if (gamepad1.y){
-//            robot.rotateTo(0, 8);
-//        }
-//        if (gamepad1.x){
-//            robot.rotateTo(90, 8);
-//        }
-//        if (gamepad1.a){
-//            robot.rotateTo(180, 8);
-//        }
-//        if (gamepad1.b){
-//            robot.rotateTo(-90, 8);
-//
-//        }
-        if(gamepad2.dpad_down) {
-            telemetry.addLine("d-pad down");
+        if (robot.left_sensor.getDistance(DistanceUnit.MM) < 20) {
+            grabLeft = true;
+            robot.claw_left.setPosition(closeLeft);
         }
+
+        if (robot.right_sensor.getDistance(DistanceUnit.MM) < 20) {
+            grabRight = true;
+            robot.claw_right.setPosition(closeRight);
+        }
+
+
+
+        telemetry.addData("Left sensor distance", robot.left_sensor.getDistance(DistanceUnit.MM));
+        telemetry.addData("Right sensor distance", robot.right_sensor.getDistance(DistanceUnit.MM));
 
         telemetry.addData("Claw Rot", robot.claw_rot.getPosition());
-
-        if (intaking) {
-            telemetry.addLine("Intaking");
-        } else {
-            telemetry.addLine("Not Intaking");
-        }
 
 
         telemetry.addData("Launcher Pos", robot.launcher.getPosition());
@@ -447,31 +441,11 @@ public class TeleOp360Mov extends OpMode {
         telemetry.addData("Right Wiper", robot.right_wiper.getPosition());
 
 
-//        telemetry.addData("Claw Rot Pos", robot.claw_rot.getPosition());
-//        telemetry.addData("Left Pos", robot.claw_left.getPosition());
-//        telemetry.addData("Right Pos", robot.claw_right.getPosition());
 
         telemetry.addLine();
 
         telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 
-//        telemetry.addData("Front_Left", robot.left_front.getVelocity());
-//        telemetry.addData("Front_Right", robot.right_front.getVelocity());
-//        telemetry.addData("Back_Left", robot.left_back.getVelocity());
-//        telemetry.addData("Back_Right", robot.right_back.getVelocity());
-
-        //telemetry.addLine();
-
-        //telemetry.addData("Claw Right", grabRight);
-        //telemetry.addData("Claw Left", grabLeft);
-        //telemetry.addData("Launch", robot.launcher.getPosition());
-
-        //telemetry.addLine();
-
-//        telemetry.addData("Front_Left", powers[0]);
-//        telemetry.addData("Front_Right", powers[1]);
-//        telemetry.addData("Back_Left", powers[2]);
-//        telemetry.addData("Back_Right", powers[3]);
 
         telemetry.update();
 

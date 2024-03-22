@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -46,6 +47,9 @@ public class HardwarePushbot {
     public Servo left_wiper;
     public Servo right_wiper;
 
+    public ColorRangeSensor left_sensor;
+    public ColorRangeSensor right_sensor;
+
     public IMU imu;
 
     //double residualPower = 0;
@@ -65,7 +69,7 @@ public class HardwarePushbot {
 
     public static final int playOffset = -100;
 
-    public int armHover = 1000 + playOffset;
+    public int armHover = 1300 + playOffset;
 
     public TeleOp360Mov.MovingState movingState = TeleOp360Mov.MovingState.NO_MOVE;
 
@@ -121,6 +125,9 @@ public class HardwarePushbot {
         left_wiper = hwMap.get(Servo.class, "left_wiper");
         right_wiper = hwMap.get(Servo.class, "right_wiper");
 
+        left_sensor = hwMap.get(ColorRangeSensor.class, "left_sensor");
+        right_sensor = hwMap.get(ColorRangeSensor.class, "right_sensor");
+
 
 
         // Reverse needed motors and start encoders at zero
@@ -147,8 +154,8 @@ public class HardwarePushbot {
 
         // Initialize and reset IMU
         imu = hwMap.get(IMU.class, "imu");
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.FORWARD;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         imu.resetYaw();
