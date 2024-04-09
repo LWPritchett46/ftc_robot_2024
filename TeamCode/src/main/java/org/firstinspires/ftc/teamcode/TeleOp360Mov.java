@@ -5,6 +5,8 @@ import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.teamcode.util.Utility.clamp;
 import static org.firstinspires.ftc.teamcode.util.Utility.expo;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -446,6 +448,12 @@ public class TeleOp360Mov extends OpMode {
 
         telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 
+        float[] detectedHSV = new float[3];
+        Color.colorToHSV(robot.right_sensor.getNormalizedColors().toColor(), detectedHSV);
+
+        telemetry.addData("Sensor value", detectedHSV[2]);
+
+        grabLeft = robot.pixelInClaw(robot.right_sensor);
 
         telemetry.update();
 
