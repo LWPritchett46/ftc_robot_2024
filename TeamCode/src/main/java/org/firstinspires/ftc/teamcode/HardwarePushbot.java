@@ -661,7 +661,7 @@ public class HardwarePushbot {
     public boolean pixelInClaw(ColorRangeSensor sensor) {
         float[] detectedHSV = new float[3];
         Color.colorToHSV(sensor.getNormalizedColors().toColor(), detectedHSV);
-        return (detectedHSV[2] > 0.005);
+        return (detectedHSV[2] > 0.002);
     }
 
     public void unfoldingRoutine() {

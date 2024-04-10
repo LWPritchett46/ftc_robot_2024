@@ -78,6 +78,10 @@ public class TeleOp360Mov extends OpMode {
     public boolean armDeployed = false;
 
     public boolean autoClose = true;
+    public boolean detectedRight = false;
+    public boolean detectedLeft = false;
+    public boolean autoOnUndetectRight = false;
+    public boolean autoOnUndetectLeft = false;
 
     public enum MovingState{
         MOVE_UP,
@@ -156,6 +160,8 @@ public class TeleOp360Mov extends OpMode {
             if (grabRight){
                 // Open Position
                 robot.claw_right.setPosition(openRight);
+                autoClose = false;
+                autoOnUndetectRight = true;
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() - 0.05);
 
             }
@@ -171,6 +177,8 @@ public class TeleOp360Mov extends OpMode {
             if (grabLeft){
                 // Open position
                 robot.claw_left.setPosition(openLeft);
+                autoClose = false;
+                autoOnUndetectLeft = true;
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() + 0.05);
 
             }
@@ -369,10 +377,17 @@ public class TeleOp360Mov extends OpMode {
                 grabLeft = false;
                 robot.claw_right.setPosition(openRight);
                 robot.claw_left.setPosition(openLeft);
+
+                autoOnUndetectRight = true;
+                autoOnUndetectLeft = true;
             }
 
 //            routines.setRoutine(1);
 //            routines.start();
+        }
+
+        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
+            autoClose = true;
         }
 
 
@@ -468,12 +483,37 @@ public class TeleOp360Mov extends OpMode {
 
         telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 
-        float[] detectedHSV = new float[3];
-        Color.colorToHSV(robot.right_sensor.getNormalizedColors().toColor(), detectedHSV);
+        float[] lDetectedHSV = new float[3];
+        float[] rDetectedHSV = new float[3];
+        Color.colorToHSV(robot.left_sensor.getNormalizedColors().toColor(), lDetectedHSV);
+        Color.colorToHSV(robot.right_sensor.getNormalizedColors().toColor(), rDetectedHSV);
 
-        telemetry.addData("Sensor value", detectedHSV[2]);
 
-        grabLeft = robot.pixelInClaw(robot.right_sensor);
+        telemetry.addData("Left Sensor value", lDetectedHSV[2]);
+        telemetry.addData("Right Sensor value", rDetectedHSV[2]);
+
+
+        detectedRight = robot.pixelInClaw(robot.right_sensor);
+        detectedLeft = robot.pixelInClaw(robot.left_sensor);
+
+        if (autoOnUndetectRight && !detectedRight){
+            autoClose = true;
+            autoOnUndetectRight = false;
+        }
+
+        if (autoOnUndetectLeft && !detectedLeft){
+            autoClose = true;
+            autoOnUndetectLeft = false;
+        }
+
+        if (autoClose) {
+            grabRight = detectedRight;
+            grabLeft = detectedLeft;
+        }
+
+        telemetry.addData("Grab Right", grabRight);
+        telemetry.addData("Left Right", grabLeft);
+
 
         telemetry.update();
 
@@ -482,15 +522,31 @@ public class TeleOp360Mov extends OpMode {
         if (grabLeft && autoClose){
             robot.claw_left.setPosition(closeLeft);
         }
-        else{
+        else if (!grabLeft && autoClose){
             robot.claw_left.setPosition(openLeft);
         }
+
 
         if (grabRight && autoClose){
             robot.claw_right.setPosition(closeRight);
         }
-        else{
+        else if (!grabRight && autoClose){
             robot.claw_right.setPosition(openRight);
+        }
+
+        if (autoClose && grabLeft && grabRight){
+            autoClose = false;
+//            grabRight = true;
+//            grabLeft = true;
+            robot.claw_right.setPosition(closeRight);
+            robot.claw_left.setPosition(closeLeft);
+            robot.claw_rot.setPosition(rotGrab);
+            robot.brake();
+            sleep(70);
+            robot.claw_rot.setPosition(rotHover);
+            robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.armUp(robot.armHover);
+            residualPower = 0.08;
         }
 
 //        telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
