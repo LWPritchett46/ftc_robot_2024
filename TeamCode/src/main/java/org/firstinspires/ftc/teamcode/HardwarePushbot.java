@@ -12,11 +12,13 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
@@ -31,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.util.Utility;
 
-import kotlin.jvm.functions.Function2;
+
 
 
 public class HardwarePushbot {
@@ -656,6 +658,11 @@ public class HardwarePushbot {
         this.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public boolean pixelInClaw(ColorRangeSensor sensor) {
+        float[] detectedHSV = new float[3];
+        Color.colorToHSV(sensor.getNormalizedColors().toColor(), detectedHSV);
+        return (detectedHSV[2] > 0.005);
+    }
 
     public void unfoldingRoutine() {
 
