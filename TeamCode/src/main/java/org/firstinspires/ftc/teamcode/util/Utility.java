@@ -69,4 +69,8 @@ public class Utility {
         }
         return sum/array.length;
     }
+
+    public static boolean isInRange(double input) {
+        return (input > 30 && input < 200) || (input > 250 && input < 340);
+    }
 }

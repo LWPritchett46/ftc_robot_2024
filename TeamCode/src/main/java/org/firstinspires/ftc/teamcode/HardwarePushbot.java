@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
 import static org.firstinspires.ftc.teamcode.util.Utility.clamp;
+import static org.firstinspires.ftc.teamcode.util.Utility.isInRange;
 import static org.firstinspires.ftc.teamcode.util.Utility.wrapIMUDeg;
 
 import android.app.Activity;
@@ -661,7 +662,7 @@ public class HardwarePushbot {
     public boolean pixelInClaw(ColorRangeSensor sensor) {
         float[] detectedHSV = new float[3];
         Color.colorToHSV(sensor.getNormalizedColors().toColor(), detectedHSV);
-        return (detectedHSV[2] > 0.002);
+        return (detectedHSV[2] > 0.002 && isInRange(detectedHSV[0]));
     }
 
     public void unfoldingRoutine() {
