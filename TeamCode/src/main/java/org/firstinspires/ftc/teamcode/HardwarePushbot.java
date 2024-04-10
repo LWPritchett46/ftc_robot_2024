@@ -2,8 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
 import static org.firstinspires.ftc.teamcode.util.Utility.clamp;
 import static org.firstinspires.ftc.teamcode.util.Utility.wrapIMUDeg;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -51,6 +58,8 @@ public class HardwarePushbot {
     public ColorRangeSensor right_sensor;
 
     public IMU imu;
+
+    View relativeLayout;
 
     //double residualPower = 0;
 
@@ -128,6 +137,8 @@ public class HardwarePushbot {
         left_sensor = hwMap.get(ColorRangeSensor.class, "left_sensor");
         right_sensor = hwMap.get(ColorRangeSensor.class, "right_sensor");
 
+        int relativeLayoutId = hwMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hwMap.appContext.getPackageName());
+        relativeLayout = ((Activity) hwMap.appContext).findViewById(relativeLayoutId);
 
 
         // Reverse needed motors and start encoders at zero
@@ -664,8 +675,8 @@ public class HardwarePushbot {
 //        this.claw_left.setPosition(TeleOp360Mov.openLeft);
 //        this.claw_right.setPosition(TeleOp360Mov.openRight);
 //        sleep(100);
-        this.claw_left.setPosition(TeleOp360Mov.openLeft);
-        this.claw_right.setPosition(TeleOp360Mov.openRight);
+        this.claw_left.setPosition(openLeft);
+        this.claw_right.setPosition(openRight);
 
         //sleep(100);
         this.armUp(1220);
@@ -695,20 +706,38 @@ public class HardwarePushbot {
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                     claw_rot.setPosition(TeleOp360Mov.rotLow);
                     arm.setPower(0);
+                }
+                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 950){
+                    claw_rot.setPosition(TeleOp360Mov.rotLow);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;
                 }
                 break;
             case MOVE_DOWN:
-                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 500){
+                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 150){
+                    claw_rot.setPosition(rotGrab);
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                     arm.setPower(0);
+                }
+                if (arm.getCurrentPosition() <= 500){
+                    claw_right.setPosition(openRight);
+                    claw_left.setPosition(openLeft);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;
                 }
                 break;
             case NO_MOVE:
                 break;
         }
+
+
+
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                float[] hsvArr = new float[3];
+                Color.RGBToHSV(255, 255, 255, hsvArr);
+                relativeLayout.setBackgroundColor(Color.HSVToColor(hsvArr));
+            }
+        });
     }
 
     // Write Autonomous Routine Stages Here!

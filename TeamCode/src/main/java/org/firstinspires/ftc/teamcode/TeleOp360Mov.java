@@ -22,7 +22,7 @@ public class TeleOp360Mov extends OpMode {
 
     // Declare OpMode members.
     HardwarePushbot robot = new HardwarePushbot();
-    AsyncRoutines routines;
+//    AsyncRoutines routines;
 
     GamepadEx gamepad1Ex;
     GamepadEx gamepad2Ex;
@@ -48,10 +48,15 @@ public class TeleOp360Mov extends OpMode {
     public static double closeLeft = 0.39;
     public static double openLeft = 0.28;
 
-    public static double rotGrab = 1;
+//    public static double rotGrab = 0.97;
+//    public static double rotHover = rotGrab;
+//    public static double rotHigh = 0.25;
+//    public static double rotLow = 0.65;
+
+    public static double rotGrab = 0.82;
     public static double rotHover = rotGrab;
-    public static double rotHigh = 0.25;
-    public static double rotLow = 0.65;
+    public static double rotHigh = 0.13;
+    public static double rotLow = 0.53;
 
     public static float rWiperStow = 1.0f;
     public static float rWiperOpen = 0.1f;
@@ -70,6 +75,8 @@ public class TeleOp360Mov extends OpMode {
     public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
     public boolean armDeployed = false;
 
+    public boolean autoClose = true;
+
     public enum MovingState{
         MOVE_UP,
         MOVE_DOWN,
@@ -84,7 +91,7 @@ public class TeleOp360Mov extends OpMode {
         armHigh = robot.armHover + 2300;
         robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        routines = new AsyncRoutines(0, robot, this);
+//        routines = new AsyncRoutines(0, robot, this);
 
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
@@ -249,6 +256,11 @@ public class TeleOp360Mov extends OpMode {
             }
             else {
 
+
+                armDeployed=false;
+                robot.movingState = MovingState.MOVE_DOWN;
+                sleep(200);
+
                 grabRight = true;
                 grabLeft = true;
                 robot.claw_right.setPosition(closeRight);
@@ -256,15 +268,10 @@ public class TeleOp360Mov extends OpMode {
                 robot.claw_rot.setPosition(rotGrab);
                 //robot.brake();
 
-                robot.movingState = MovingState.MOVE_DOWN;
-                robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.isHolding = false;
-                residualPower = 0;
-                robot.arm.setPower(-0.8);
-                armDeployed=false;
+                robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.arm.setPower(-0.7);
 
-//                grabRight = false;
-//                grabLeft = false;
 //                robot.claw_right.setPosition(openRight);
 //                robot.claw_left.setPosition(openLeft);
 //                robot.claw_right.setPosition(closeRight);
@@ -278,7 +285,7 @@ public class TeleOp360Mov extends OpMode {
 //            routines.start();
         }
 
-        if (gamepad2.y && robot.arm.getCurrentPosition() > lowerLimit){
+        if (gamepad2.y && robot.arm.getCurrentPosition() > lowerLimit + 200){
             // Move up
 
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -297,7 +304,7 @@ public class TeleOp360Mov extends OpMode {
 //            routines.setRoutine(0);
 //            routines.start();
         }
-        else if (gamepad2.a && robot.arm.getCurrentPosition() < upperLimit) {
+        else if (gamepad2.a && robot.arm.getCurrentPosition() < upperLimit - 200) {
             // Move down
 
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -331,6 +338,7 @@ public class TeleOp360Mov extends OpMode {
             // Grabbing Position
 
             if (robot.arm.getCurrentPosition() < robot.armHover/2) {
+                autoClose = false;
                 grabRight = true;
                 grabLeft = true;
                 robot.claw_right.setPosition(closeRight);
@@ -341,7 +349,7 @@ public class TeleOp360Mov extends OpMode {
                 robot.claw_rot.setPosition(rotHover);
                 robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 robot.armUp(robot.armHover);
-                residualPower = 0.05;
+                residualPower = 0.08;
             }
             else{
                 grabRight = true;
@@ -375,7 +383,7 @@ public class TeleOp360Mov extends OpMode {
 
         if (gamepad1.right_bumper) {
             for (int i = 0; i < powers.length; i++) {
-                powers[i] /= 3;
+                powers[i] /= 3.7;
             }
         }
         robot.setVelocities(powers);
@@ -415,30 +423,42 @@ public class TeleOp360Mov extends OpMode {
             robot.holdPos -= 25;
         }
 
-        if (robot.left_sensor.getDistance(DistanceUnit.MM) < 20) {
-            grabLeft = true;
-            robot.claw_left.setPosition(closeLeft);
-        }
-
-        if (robot.right_sensor.getDistance(DistanceUnit.MM) < 20) {
-            grabRight = true;
-            robot.claw_right.setPosition(closeRight);
-        }
+//        if (robot.left_sensor.getDistance(DistanceUnit.MM) < 20) {
+//            grabLeft = true;
+//            robot.claw_left.setPosition(closeLeft);
+//        }
+//
+//        if (robot.right_sensor.getDistance(DistanceUnit.MM) < 20) {
+//            grabRight = true;
+//            robot.claw_right.setPosition(closeRight);
+//        }
 
 
 
         telemetry.addData("Left sensor distance", robot.left_sensor.getDistance(DistanceUnit.MM));
         telemetry.addData("Right sensor distance", robot.right_sensor.getDistance(DistanceUnit.MM));
 
-        telemetry.addData("Claw Rot", robot.claw_rot.getPosition());
+        telemetry.addLine();
 
-
-        telemetry.addData("Launcher Pos", robot.launcher.getPosition());
+        telemetry.addData("Left sensor col", robot.left_sensor.getNormalizedColors());
+        telemetry.addData("Right sensor col", robot.right_sensor.getNormalizedColors());
 
         telemetry.addLine();
 
-        telemetry.addData("Left Wiper", robot.left_wiper.getPosition());
-        telemetry.addData("Right Wiper", robot.right_wiper.getPosition());
+
+
+//        telemetry.addData("Left claw", grabLeft);
+//        telemetry.addData("Right claw", grabRight);
+//
+        telemetry.addData("Claw Rot", robot.claw_rot.getPosition());
+//
+//
+        telemetry.addData("Launcher Pos", robot.launcher.getPosition());
+//
+//        telemetry.addLine();
+//
+//        telemetry.addData("Left Wiper", robot.left_wiper.getPosition());
+//        telemetry.addData("Right Wiper", robot.right_wiper.getPosition());
 
 
 
@@ -451,29 +471,43 @@ public class TeleOp360Mov extends OpMode {
 
         robot.tick();
 
+        if (grabLeft && autoClose){
+            robot.claw_left.setPosition(closeLeft);
+        }
+        else{
+            robot.claw_left.setPosition(openLeft);
+        }
+
+        if (grabRight && autoClose){
+            robot.claw_right.setPosition(closeRight);
+        }
+        else{
+            robot.claw_right.setPosition(openRight);
+        }
+
 //        telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
 //        telemetry.addData("Arm Vel", robot.arm.getVelocity());
 
 
-        if (rTriggerReader1.wasJustPressed()) {
-
-            if (wiperOpenRight) {
-                robot.right_wiper.setPosition(rWiperGrab);
-            } else {
-                robot.right_wiper.setPosition(rWiperOpen);
-            }
-            wiperOpenRight = !wiperOpenRight;
-        }
-
-        if (lTriggerReader1.wasJustPressed()) {
-
-            if (wiperOpenLeft) {
-                robot.left_wiper.setPosition(lWiperGrab);
-            } else {
-                robot.left_wiper.setPosition(lWiperOpen);
-            }
-            wiperOpenLeft = !wiperOpenLeft;
-        }
+//        if (rTriggerReader1.wasJustPressed()) {
+//
+//            if (wiperOpenRight) {
+//                robot.right_wiper.setPosition(rWiperGrab);
+//            } else {
+//                robot.right_wiper.setPosition(rWiperOpen);
+//            }
+//            wiperOpenRight = !wiperOpenRight;
+//        }
+//
+//        if (lTriggerReader1.wasJustPressed()) {
+//
+//            if (wiperOpenLeft) {
+//                robot.left_wiper.setPosition(lWiperGrab);
+//            } else {
+//                robot.left_wiper.setPosition(lWiperOpen);
+//            }
+//            wiperOpenLeft = !wiperOpenLeft;
+//        }
 
 
         // Toggle Timers & HoldPos -----------------------------------------------------------------
@@ -495,7 +529,6 @@ public class TeleOp360Mov extends OpMode {
 
     @Override
     public void stop() {
-        routines.run = false;
     }
 
 }
