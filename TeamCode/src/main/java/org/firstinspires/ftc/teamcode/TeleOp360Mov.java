@@ -60,13 +60,6 @@ public class TeleOp360Mov extends OpMode {
     public static double rotHigh = 0.13;
     public static double rotLow = 0.53;
 
-    public static float rWiperStow = 1.0f;
-    public static float rWiperOpen = 0.1f;
-    public static float rWiperGrab = 0.65f;
-
-    public static float lWiperStow = 0.1f;
-    public static float lWiperOpen = 1.0f;
-    public static float lWiperGrab = 0.55f;
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
     public static int armLow = 3800 + HardwarePushbot.playOffset;
@@ -375,11 +368,13 @@ public class TeleOp360Mov extends OpMode {
                 residualPower = 0.05;
                 grabRight = false;
                 grabLeft = false;
-                robot.claw_right.setPosition(openRight);
-                robot.claw_left.setPosition(openLeft);
 
                 autoOnUndetectRight = true;
                 autoOnUndetectLeft = true;
+
+                robot.claw_right.setPosition(openRight);
+                robot.claw_left.setPosition(openLeft);
+
             }
 
 //            routines.setRoutine(1);
