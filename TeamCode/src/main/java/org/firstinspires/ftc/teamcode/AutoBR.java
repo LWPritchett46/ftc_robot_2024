@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotHover;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotLow;
 import static org.firstinspires.ftc.teamcode.util.Utility.*;
@@ -57,7 +58,7 @@ public class AutoBR extends OpMode {
 
 
     int centerX = 320;
-    int quadrant = 2;
+    int quadrant = 3;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -107,17 +108,20 @@ public class AutoBR extends OpMode {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         float highestConfidence = 0;
-        for (Recognition recognition : currentRecognitions){
-            if (recognition.getConfidence() > highestConfidence){
-                highestConfidence = recognition.getConfidence();
-                centerX = Math.round((recognition.getLeft() + recognition.getRight())/2);
-                quadrant = 1 + Math.floorDiv(centerX, (640/3));
+
+        if (!currentRecognitions.isEmpty()) {
+            for (Recognition recognition : currentRecognitions) {
+                if (recognition.getConfidence() > highestConfidence) {
+                    highestConfidence = recognition.getConfidence();
+                    centerX = Math.round((recognition.getLeft() + recognition.getRight()) / 2);
+                    quadrant = 1 + Math.floorDiv(centerX, (640 / 2));
+                }
             }
+        } else {
+            quadrant = 3;
         }
 
         telemetry.addData("Quadrant", quadrant);
-        telemetry.addData("Confidence", highestConfidence);
-
         telemetry.update();
     }
 
@@ -128,23 +132,19 @@ public class AutoBR extends OpMode {
         robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.imu.resetYaw();
 
+        robot.imu.resetYaw();
 
-        // Grab Preloaded Pixels
-        robot.claw_right.setPosition(closeRight);
+        robot.claw_rot.setPosition(rotGrab);
         robot.claw_left.setPosition(closeLeft);
-        sleep(100);
+        robot.claw_right.setPosition(closeRight);
 
-        // Unfold Intake
-        robot.intake_rot.setPosition(TeleOp360Mov.intakeOpen);
-        sleep(500);
-        robot.intake_rot.setPosition(TeleOp360Mov.intakeOpen);
-        sleep(500);
+        sleep(70);
+//        robot.claw_rot.setPosition(rotHover);
+//        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.armUp(robot.armHover);
+//        residualPower = 0.08;
 
-        // Hover
-        residualPower = 0.05;
-        robot.claw_rot.setPosition(rotHover);
-        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.armUp(robot.armHover - 20);
+
 
 //        quadrant = 2;
 
@@ -383,40 +383,32 @@ public class AutoBR extends OpMode {
 
     private void routineThree() {
 
-        robot.imu.resetYaw();
+        robot.moveRotateTo(270, 331 * (Math.PI/180), 0.15, true, 1.0, 0.45, telemetry);
 
-        robot.moveRotateTo(177, 255 * (Math.PI/180), 0.15, false, 0.7, 1.03, telemetry);
+        robot.fling.setPosition(0.1);
+        sleep(50);
 
-        robot.claw_rot.setPosition(rotHover);
-        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.armUp(robot.armHover - 100);
-        residualPower = 0.05;
+        robot.moveTo(90 * (Math.PI/180), 500, 1000, 1.3, telemetry);
 
-        robot.claw_left.setPosition(openLeft);
-        sleep(100);
-        robot.moveTo(180 * (Math.PI/180), 3200, 1800, 1.3, telemetry);
-        robot.brake();
-
-        robot.intake_rot.getController().pwmDisable();
-
-        robot.armUp(armLow);
-        robot.claw_rot.setPosition(rotLow - 0.08);
-        robot.isHolding = false;
-        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        sleep(100);
-
-        robot.moveTo(135 * (Math.PI / 180), 420, 1000, 1.25, telemetry);
-        robot.claw_right.setPosition(openRight);
-        sleep(400);
-
-        // Move Back
-        robot.moveTo(0 , 200, 800, 1.25, telemetry);
-        robot.claw_rot.setPosition(rotHover);
-        robot.armUp(robot.armHover);
-
-        ;
-        robot.moveTo(180 * (Math.PI / 180), 700, 900, 1.25, telemetry);
-        robot.brake();
+//
+//        robot.armUp(armLow);
+//        robot.claw_rot.setPosition(rotLow - 0.08);
+//        robot.isHolding = false;
+//        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        sleep(100);
+//
+//        robot.moveTo(135 * (Math.PI / 180), 420, 1000, 1.25, telemetry);
+//        robot.claw_right.setPosition(openRight);
+//        sleep(400);
+//
+//        // Move Back
+//        robot.moveTo(0 , 200, 800, 1.25, telemetry);
+//        robot.claw_rot.setPosition(rotHover);
+//        robot.armUp(robot.armHover);
+//
+//        ;
+//        robot.moveTo(180 * (Math.PI / 180), 700, 900, 1.25, telemetry);
+//        robot.brake();
     }
 
 

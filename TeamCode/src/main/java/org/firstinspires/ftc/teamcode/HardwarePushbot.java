@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeLeft;
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
@@ -32,6 +34,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.util.Utility;
 
 
@@ -56,6 +59,7 @@ public class HardwarePushbot {
     public Servo intake_rot;
     public Servo left_wiper;
     public Servo right_wiper;
+    public Servo fling;
 
     public ColorRangeSensor left_sensor;
     public ColorRangeSensor right_sensor;
@@ -73,13 +77,20 @@ public class HardwarePushbot {
     static final double DRIVE_GEAR_REDUCTION = 0.4;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_CM = 10.16;     // For figuring circumference
     static final double COUNTS_PER_CM = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * Math.PI) * correction;
-    static final double DRIVE_SPEED = 2700;
+    static final double DRIVE_SPEED = 3500;
     static final double TURN_SPEED_MODIFIER = 0.7;
     static final double ANGLE_TOLERANCE = 1;
 
     static final double joystickExp = 1.5;
 
     public static final int playOffset = -100;
+
+    boolean grabLeft, grabRight = true;
+    public boolean autoClose = true;
+    public boolean detectedRight = false;
+    public boolean detectedLeft = false;
+    public boolean autoOnUndetectRight = false;
+    public boolean autoOnUndetectLeft = false;
 
     public int armHover = 1300 + playOffset;
 
@@ -123,7 +134,7 @@ public class HardwarePushbot {
         right_back = hwMap.get(DcMotorEx.class, "rightback_wheel");
 
         // Functionality Motors
-        intake = hwMap.get(DcMotorEx.class, "intake");
+//        intake = hwMap.get(DcMotorEx.class, "intake");
         arm = hwMap.get(DcMotorEx.class, "arm");
         lift = hwMap.get(DcMotorEx.class, "lift");
 
@@ -132,10 +143,11 @@ public class HardwarePushbot {
         claw_rot = hwMap.get(Servo.class, "claw_rot");
         claw_right = hwMap.get(Servo.class, "claw_right");
         claw_left = hwMap.get(Servo.class, "claw_left");
-        intake_rot = hwMap.get(Servo.class, "intake_rot");
+//        intake_rot = hwMap.get(Servo.class, "intake_rot");
 
         left_wiper = hwMap.get(Servo.class, "left_wiper");
         right_wiper = hwMap.get(Servo.class, "right_wiper");
+        fling = hwMap.get(Servo.class, "fling");
 
         left_sensor = hwMap.get(ColorRangeSensor.class, "left_sensor");
         right_sensor = hwMap.get(ColorRangeSensor.class, "right_sensor");
@@ -147,7 +159,7 @@ public class HardwarePushbot {
         // Reverse needed motors and start encoders at zero
         right_front.setDirection(DcMotor.Direction.REVERSE);
         left_back.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+//        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         //intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -662,7 +674,9 @@ public class HardwarePushbot {
     public boolean pixelInClaw(ColorRangeSensor sensor) {
         float[] detectedHSV = new float[3];
         Color.colorToHSV(sensor.getNormalizedColors().toColor(), detectedHSV);
-        return (detectedHSV[2] > 0.002 && isInRange(detectedHSV[0]));
+//        return (detectedHSV[2] > 0.004 && isInRange(detectedHSV[0]));
+        return (detectedHSV[2] > 0.004 || sensor.getDistance(DistanceUnit.MM) < 30);
+
     }
 
     public void unfoldingRoutine() {
@@ -712,10 +726,14 @@ public class HardwarePushbot {
                 if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 700){
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                    claw_rot.setPosition(TeleOp360Mov.rotLow);
                     arm.setPower(0);
                 }
-                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 950){
+//                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 900){
+//                    arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//                    arm.setPower(0);
+//                }
+                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 1300){
                     claw_rot.setPosition(TeleOp360Mov.rotLow);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;
                 }
@@ -725,9 +743,16 @@ public class HardwarePushbot {
                     claw_rot.setPosition(rotGrab);
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    grabRight = true;
+                    grabLeft = true;
+                    claw_right.setPosition(closeRight);
+                    claw_left.setPosition(closeLeft);
                     arm.setPower(0);
                 }
                 if (arm.getCurrentPosition() <= 500){
+                    grabLeft = false;
+                    grabRight = false;
+                    autoClose = true;
                     claw_right.setPosition(openRight);
                     claw_left.setPosition(openLeft);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;

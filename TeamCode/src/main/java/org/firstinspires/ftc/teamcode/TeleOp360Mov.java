@@ -37,7 +37,6 @@ public class TeleOp360Mov extends OpMode {
 
     /* 'grab' is helpful to determine whether or not the claws are at a "grabbing" position.
     Depending on the position, the claw will open or close. */
-    boolean grabLeft, grabRight = true;
     boolean wiperOpenLeft, wiperOpenRight = true;
     boolean intaking = false;
 
@@ -47,18 +46,18 @@ public class TeleOp360Mov extends OpMode {
     public static double closeRight = 0.45;
     public static double openRight = 0.57;
 
-    public static double closeLeft = 0.39;
-    public static double openLeft = 0.28;
+    public static double closeLeft = 0.37;
+    public static double openLeft = 0.26;
 
 //    public static double rotGrab = 0.97;
 //    public static double rotHover = rotGrab;
 //    public static double rotHigh = 0.25;
 //    public static double rotLow = 0.65;
 
-    public static double rotGrab = 0.82;
+    public static double rotGrab = 0.90;
     public static double rotHover = rotGrab;
     public static double rotHigh = 0.13;
-    public static double rotLow = 0.53;
+    public static double rotLow = 0.45;
 
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
@@ -70,11 +69,6 @@ public class TeleOp360Mov extends OpMode {
     public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
     public boolean armDeployed = false;
 
-    public boolean autoClose = true;
-    public boolean detectedRight = false;
-    public boolean detectedLeft = false;
-    public boolean autoOnUndetectRight = false;
-    public boolean autoOnUndetectLeft = false;
 
     public enum MovingState{
         MOVE_UP,
@@ -122,8 +116,8 @@ public class TeleOp360Mov extends OpMode {
 
         robot.claw_rot.setPosition(rotGrab);
 
-        grabRight = false;
-        grabLeft = false;
+        robot.grabRight = false;
+        robot.grabLeft = false;
         robot.claw_right.setPosition(closeRight);
         robot.claw_left.setPosition(closeLeft);
         sleep(100);
@@ -150,11 +144,11 @@ public class TeleOp360Mov extends OpMode {
 
         // Right Claw Controls ---------------------------------------------------------------------
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-            if (grabRight){
+            if (robot.grabRight){
                 // Open Position
                 robot.claw_right.setPosition(openRight);
-                autoClose = false;
-                autoOnUndetectRight = true;
+                robot.autoClose = false;
+                robot.autoOnUndetectRight = !armDeployed;
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() - 0.05);
 
             }
@@ -162,16 +156,16 @@ public class TeleOp360Mov extends OpMode {
                 // Close position
                 robot.claw_right.setPosition(closeRight);
             }
-            grabRight = !grabRight;
+            robot.grabRight = !robot.grabRight;
         }
 
         // Left Claw Controls
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-            if (grabLeft){
+            if (robot.grabLeft){
                 // Open position
                 robot.claw_left.setPosition(openLeft);
-                autoClose = false;
-                autoOnUndetectLeft = true;
+                robot.autoClose = false;
+                robot.autoOnUndetectLeft = !armDeployed;
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() + 0.05);
 
             }
@@ -179,19 +173,19 @@ public class TeleOp360Mov extends OpMode {
                 // Close position
                 robot.claw_left.setPosition(closeLeft);
             }
-            grabLeft = !grabLeft;
+            robot.grabLeft = !robot.grabLeft;
         }
 
         // Intake Controls -------------------------------------------------------------------------
-        if (gamepad2.dpad_down /* && intakeTimer == 0 */){
-            //intakeTimer = 5;
-            //if (intaking){
-                robot.intake.setPower(1.0);
-            }
-
-            else{
-                robot.intake.setPower(0);
-            }
+//        if (gamepad2.dpad_down /* && intakeTimer == 0 */){
+//            //intakeTimer = 5;
+//            //if (intaking){
+//                robot.intake.setPower(1.0);
+//            }
+//
+//            else{
+//                robot.intake.setPower(0);
+//            }
         //}
 
 
@@ -241,8 +235,8 @@ public class TeleOp360Mov extends OpMode {
 
             if(!armDeployed) {
 
-                grabRight = true;
-                grabLeft = true;
+                robot.grabRight = true;
+                robot.grabLeft = true;
                 robot.claw_right.setPosition(closeRight);
                 robot.claw_left.setPosition(closeLeft);
                 //robot.brake();
@@ -256,24 +250,23 @@ public class TeleOp360Mov extends OpMode {
                 //robot.claw_rot.setPosition(rotLow);
                 robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 armDeployed=true;
+                robot.autoClose = false;
             }
             else {
 
 
                 armDeployed=false;
+                robot.claw_rot.setPosition(rotGrab);
+                robot.claw_rot.setPosition(rotGrab);
                 robot.movingState = MovingState.MOVE_DOWN;
                 sleep(200);
 
-                grabRight = true;
-                grabLeft = true;
-                robot.claw_right.setPosition(closeRight);
-                robot.claw_left.setPosition(closeLeft);
-                robot.claw_rot.setPosition(rotGrab);
+
                 //robot.brake();
 
                 robot.isHolding = false;
                 robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.arm.setPower(-0.7);
+                robot.arm.setPower(-0.85);
 
 //                robot.claw_right.setPosition(openRight);
 //                robot.claw_left.setPosition(openLeft);
@@ -341,9 +334,9 @@ public class TeleOp360Mov extends OpMode {
             // Grabbing Position
 
             if (robot.arm.getCurrentPosition() < robot.armHover/2) {
-                autoClose = false;
-                grabRight = true;
-                grabLeft = true;
+                robot.autoClose = false;
+                robot.grabRight = true;
+                robot.grabLeft = true;
                 robot.claw_right.setPosition(closeRight);
                 robot.claw_left.setPosition(closeLeft);
                 robot.claw_rot.setPosition(rotGrab);
@@ -355,8 +348,8 @@ public class TeleOp360Mov extends OpMode {
                 residualPower = 0.08;
             }
             else{
-                grabRight = true;
-                grabLeft = true;
+                robot.grabRight = true;
+                robot.grabLeft = true;
                 robot.claw_right.setPosition(closeRight);
                 robot.claw_left.setPosition(closeLeft);
                 robot.claw_rot.setPosition(rotGrab);
@@ -366,11 +359,11 @@ public class TeleOp360Mov extends OpMode {
                 //sleep(50);
                 robot.armDown();
                 residualPower = 0.05;
-                grabRight = false;
-                grabLeft = false;
+                robot.grabRight = false;
+                robot.grabLeft = false;
 
-                autoOnUndetectRight = true;
-                autoOnUndetectLeft = true;
+                robot.autoOnUndetectRight = true;
+                robot.autoOnUndetectLeft = true;
 
                 robot.claw_right.setPosition(openRight);
                 robot.claw_left.setPosition(openLeft);
@@ -382,7 +375,7 @@ public class TeleOp360Mov extends OpMode {
         }
 
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-            autoClose = true;
+            robot.autoClose = true;
         }
 
 
@@ -402,14 +395,15 @@ public class TeleOp360Mov extends OpMode {
 
         // Arm to lift Position --------------------------------------------------------------------
         if (gamepad1.a){
+            robot.autoClose = false;
             robot.brake();
-            robot.armUp(armHigh - 700);
+            robot.armUp(armHigh - 1000);
         }
 
         // Purge Intake ----------------------------------------------------------------------------
-        if (gamepad1.left_bumper){
-            robot.intake.setPower(-0.8);
-        }
+//        if (gamepad1.left_bumper){
+//            robot.intake.setPower(-0.8);
+//        }
 
 
         // Lift Controls ---------------------------------------------------------------------------
@@ -436,12 +430,12 @@ public class TeleOp360Mov extends OpMode {
         }
 
 //        if (robot.left_sensor.getDistance(DistanceUnit.MM) < 20) {
-//            grabLeft = true;
+//            robot.grabLeft = true;
 //            robot.claw_left.setPosition(closeLeft);
 //        }
 //
 //        if (robot.right_sensor.getDistance(DistanceUnit.MM) < 20) {
-//            grabRight = true;
+//            robot.grabRight = true;
 //            robot.claw_right.setPosition(closeRight);
 //        }
 
@@ -459,8 +453,8 @@ public class TeleOp360Mov extends OpMode {
 
 
 
-//        telemetry.addData("Left claw", grabLeft);
-//        telemetry.addData("Right claw", grabRight);
+//        telemetry.addData("Left claw", robot.grabLeft);
+//        telemetry.addData("Right claw", robot.grabRight);
 //
         telemetry.addData("Claw Rot", robot.claw_rot.getPosition());
 //
@@ -477,6 +471,8 @@ public class TeleOp360Mov extends OpMode {
         telemetry.addLine();
 
         telemetry.addData("Arm Pos", robot.arm.getCurrentPosition());
+        telemetry.addData("Arm State", robot.movingState);
+
 
         float[] lDetectedHSV = new float[3];
         float[] rDetectedHSV = new float[3];
@@ -488,56 +484,53 @@ public class TeleOp360Mov extends OpMode {
         telemetry.addData("Right Sensor value", rDetectedHSV[2]);
 
 
-        detectedRight = robot.pixelInClaw(robot.right_sensor);
-        detectedLeft = robot.pixelInClaw(robot.left_sensor);
+        robot.detectedRight = robot.pixelInClaw(robot.right_sensor);
+        robot.detectedLeft = robot.pixelInClaw(robot.left_sensor);
 
-        if (autoOnUndetectRight && !detectedRight){
-            autoClose = true;
-            autoOnUndetectRight = false;
+        telemetry.addData("Left Sensor detect", robot.detectedLeft);
+        telemetry.addData("Right Sensor detect", robot.detectedRight);
+
+        if (robot.autoOnUndetectRight && !robot.detectedRight){
+            robot.autoClose = true;
+            robot.autoOnUndetectRight = false;
         }
 
-        if (autoOnUndetectLeft && !detectedLeft){
-            autoClose = true;
-            autoOnUndetectLeft = false;
+        if (robot.autoOnUndetectLeft && !robot.detectedLeft){
+            robot.autoClose = true;
+            robot.autoOnUndetectLeft = false;
         }
 
-        if (autoClose) {
-            grabRight = detectedRight;
-            grabLeft = detectedLeft;
+        if (robot.autoClose) {
+            robot.grabRight = robot.detectedRight;
+            robot.grabLeft = robot.detectedLeft;
         }
 
-        telemetry.addData("Grab Right", grabRight);
-        telemetry.addData("Left Right", grabLeft);
+        telemetry.addData("Grab Right", robot.grabRight);
+        telemetry.addData("Left Right", robot.grabLeft);
 
 
         telemetry.update();
 
         robot.tick();
 
-        if (grabLeft && autoClose){
+        if (robot.grabLeft && robot.autoClose){
             robot.claw_left.setPosition(closeLeft);
         }
-        else if (!grabLeft && autoClose){
+        else if (!robot.grabLeft && robot.autoClose){
             robot.claw_left.setPosition(openLeft);
         }
 
 
-        if (grabRight && autoClose){
+        if (robot.grabRight && robot.autoClose){
             robot.claw_right.setPosition(closeRight);
         }
-        else if (!grabRight && autoClose){
+        else if (!robot.grabRight && robot.autoClose){
             robot.claw_right.setPosition(openRight);
         }
 
-        if (autoClose && grabLeft && grabRight){
-            autoClose = false;
-//            grabRight = true;
-//            grabLeft = true;
-            robot.claw_right.setPosition(closeRight);
-            robot.claw_left.setPosition(closeLeft);
-            robot.claw_rot.setPosition(rotGrab);
+        if (robot.autoClose && robot.detectedRight && robot.detectedLeft && robot.grabRight && robot.grabLeft){
+            robot.autoClose = false;
             robot.brake();
-            sleep(70);
             robot.claw_rot.setPosition(rotHover);
             robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.armUp(robot.armHover);
@@ -548,15 +541,15 @@ public class TeleOp360Mov extends OpMode {
 //        telemetry.addData("Arm Vel", robot.arm.getVelocity());
 
 
-//        if (rTriggerReader1.wasJustPressed()) {
-//
-//            if (wiperOpenRight) {
-//                robot.right_wiper.setPosition(rWiperGrab);
-//            } else {
-//                robot.right_wiper.setPosition(rWiperOpen);
-//            }
-//            wiperOpenRight = !wiperOpenRight;
-//        }
+        if (rTriggerReader1.wasJustPressed()) {
+
+            if (wiperOpenRight) {
+                robot.right_wiper.setPosition(rWiperGrab);
+            } else {
+                robot.right_wiper.setPosition(rWiperOpen);
+            }
+            wiperOpenRight = !wiperOpenRight;
+        }
 //
 //        if (lTriggerReader1.wasJustPressed()) {
 //
