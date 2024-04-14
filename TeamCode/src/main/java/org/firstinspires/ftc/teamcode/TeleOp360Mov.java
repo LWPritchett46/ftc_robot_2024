@@ -54,6 +54,14 @@ public class TeleOp360Mov extends OpMode {
 //    public static double rotHigh = 0.25;
 //    public static double rotLow = 0.65;
 
+    public static float rWiperStow = 1.0f;
+    public static float rWiperOpen = 0.1f;
+    public static float rWiperGrab = 0.58f;
+
+    public static float lWiperStow = 0.1f;
+    public static float lWiperOpen = 1.0f;
+    public static float lWiperGrab = 0.55f;
+
     public static double rotGrab = 0.90;
     public static double rotHover = rotGrab;
     public static double rotHigh = 0.13;

@@ -217,13 +217,18 @@ public class HardwarePushbot {
     // target: target angle in degrees
     // maxVel: maximum allowed velocity
     // initVel: fraction of maxVel to be used as the initial and final velocity
-    public void rotateTo(double target, double maxVel, double initVel, boolean isClockwise, double pow) {
+    public void rotateTo(double target, double maxVel, double initVel, boolean isClockwise, double pow, Telemetry telemetry) {
 
 
         double angle = wrapIMUDeg(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         boolean throughZero;
         double diff;
+        double initDiff;
+        double oldDiff;
         double factor;
+
+        boolean overShot = false;
+        boolean crossedRange = false;
 
         throughZero = isClockwise && target > angle;
 
@@ -236,7 +241,10 @@ public class HardwarePushbot {
 
         double midpoint = diff/2;
 
-        midpoint *= .90;
+//        midpoint *= .90;
+
+        initDiff = diff;
+        oldDiff = diff;
 
         while (Math.abs(diff) >= ANGLE_TOLERANCE) {
 
@@ -271,10 +279,28 @@ public class HardwarePushbot {
                 velocity *= -1;
             }
 
+            crossedRange = diff > initDiff + ANGLE_TOLERANCE && oldDiff < initDiff + ANGLE_TOLERANCE;
+
+            if (diff > initDiff + ANGLE_TOLERANCE && crossedRange){
+                overShot = !overShot;
+            }
+
+            if (overShot){
+                velocity *= -0.5;
+            }
+
             this.left_front.setVelocity(-velocity);
             this.right_front.setVelocity(velocity);
             this.left_back.setVelocity(-velocity);
             this.right_back.setVelocity(velocity);
+
+            telemetry.addData("Diff", diff);
+            telemetry.addData("Init Diff", initDiff);
+            telemetry.addData("Over Shot", overShot);
+            telemetry.addData("Velocity", velocity);
+            telemetry.update();
+
+            oldDiff = diff;
         }
         this.brake();
     }

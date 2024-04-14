@@ -188,7 +188,7 @@ public class AutoRL extends OpMode {
         robot.moveTo(180 * (Math.PI/180), 1550, 1800, 1.3, telemetry);
         robot.brake();
         sleep(100);
-        robot.rotateTo(0, 1000, 0.15,false, 1.3);
+        robot.rotateTo(0, 1000, 0.15,false, 1.3, telemetry);
         robot.brake();
 
         robot.armUp(armLow);
@@ -231,7 +231,7 @@ public class AutoRL extends OpMode {
         robot.moveTo(180 * (Math.PI/180), 1800, 1500, 1.3, telemetry);
         robot.brake();
         sleep(100);
-        robot.rotateTo(0, 800, 0.15,false, 1.3);
+        robot.rotateTo(0, 800, 0.15,false, 1.3, telemetry);
         robot.brake();
 
         robot.armUp(armLow);
