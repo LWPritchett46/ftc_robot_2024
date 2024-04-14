@@ -418,7 +418,7 @@ public class AutoBR extends OpMode {
         robot.rotateTo(92, 1500, 0.2, true, 1, telemetry);
         robot.brake();
 
-        robot.moveTo(90 * (Math.PI/180), 950, 1500, 0.8, telemetry);
+        robot.moveTo(90 * (Math.PI/180), 1000, 1500, 0.8, telemetry);
         robot.brake();
 
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -436,7 +436,7 @@ public class AutoBR extends OpMode {
 
         robot.moveTo(225 * (Math.PI/180), 600, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(340 * (Math.PI/180), 700, 1000, 0.8, telemetry);
+        robot.moveTo(330 * (Math.PI/180), 750, 1000, 0.8, telemetry);
 
 
 
