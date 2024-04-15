@@ -139,9 +139,8 @@ public class AutoBR extends OpMode {
 
         robot.claw_rot.setPosition(rotGrab);
         robot.claw_left.setPosition(closeLeft);
-        sleep(70);
         robot.claw_right.setPosition(openRight);
-        sleep(70);
+        sleep(150);
         robot.right_wiper.setPosition(rWiperOpen);
 //        robot.claw_rot.setPosition(rotHover);
 //        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -150,7 +149,7 @@ public class AutoBR extends OpMode {
 
 
 
-//        quadrant = 2;
+        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {
@@ -299,90 +298,115 @@ public class AutoBR extends OpMode {
     public void stop() {
     }
 
+
     private void routineOne() {
 
-        robot.imu.resetYaw();
+        robot.moveRotateTo(270, 0 * (Math.PI/180), 0.15, true, 1.0, 0.52, telemetry);
+        robot.moveTo(180 * (Math.PI/180), 400, 500, 0, telemetry);
 
-        robot.moveRotateTo(177, 255 * (Math.PI/180), 0.15, false, 0.7, 1.03, telemetry);
-        sleep(100);
-        robot.moveTo(180 * (Math.PI/180), 1070, 1200, 1.8, telemetry);
+        robot.fling.setPosition(0.1);
+        sleep(50);
 
-        robot.claw_rot.setPosition(rotHover);
-        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.armUp(robot.armHover - 100);
-        residualPower = 0.05;
+        robot.moveTo(5 * (Math.PI/180), 1150, 600, 0, telemetry);
 
-        robot.claw_left.setPosition(openLeft);
-        sleep(100);
-        robot.moveTo(180 * (Math.PI/180), 2230, 1800, 1.3, telemetry);
+        robot.right_wiper.setPosition(rWiperGrab);
+        sleep(600);
+        robot.claw_right.setPosition(closeRight);
+        sleep(70);
+
+        robot.moveTo(180 * (Math.PI/180), 100, 500, 0, telemetry);
+        robot.brake();
+        robot.moveTo(100 * (Math.PI/180), 1000, 500, 0, telemetry);
         robot.brake();
 
-        robot.intake_rot.getController().pwmDisable();
 
-        robot.armUp(armLow);
-        robot.claw_rot.setPosition(rotLow - 0.05);
-        robot.isHolding = false;
+        //Common Part
+        robot.claw_rot.setPosition(rotHover);
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        sleep(100);
-
-        robot.moveTo(240 * (Math.PI / 180), 400, 1000, 1.25, telemetry);
-        robot.claw_right.setPosition(openRight);
-        sleep(350);
-
-        // Move Back
-        robot.moveTo(0 , 200, 800, 1.25, telemetry);
-        robot.claw_rot.setPosition(rotHover);
         robot.armUp(robot.armHover);
+        robot.setVelocities(new double[]{-400, 400, 400, 400});
+        sleep(100);
+        robot.claw_rot.setPosition(rotLow + 0.12);
 
-        ;
-        robot.moveTo(150 * (Math.PI / 180), 650, 900, 1.25, telemetry);
+        robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
-//        robot.brake();
-//        robot.moveTo(175 * (Math.PI/180), 1300, 1000, 1.25, telemetry);
+        robot.rotateTo(92, 1500, 0.2, true, 1, telemetry);
+        robot.brake();
+
+        robot.moveTo(90 * (Math.PI/180), 1080, 1500, 0.8, telemetry);
+        robot.brake();
+
+        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.armUp(robot.armHover + 100);
+        robot.arm.setPower(0.04);
+
+        robot.moveTo(0 * (Math.PI/180), 750, 1000, 0.8, telemetry);
+        robot.arm.setPower(0);
+        robot.brake();
+
+        robot.claw_right.setPosition(openRight);
+        robot.claw_left.setPosition(openLeft);
+        robot.right_wiper.setPosition(rWiperStow);
+        sleep(70);
+
+        robot.moveTo(245 * (Math.PI/180), 600, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(340 * (Math.PI/180), 750, 1000, 0.8, telemetry);
     }
 
     private void routineTwo() {
 
-        robot.moveRotateTo(90, 268 * (Math.PI / 180), 0.1, false, 1.62, 0.30, telemetry);
+        robot.moveRotateTo(270, 350 * (Math.PI/180), 0.15, true, 1.0, 0.38, telemetry);
+
+        robot.fling.setPosition(0.1);
+        sleep(50);
+
+        robot.moveTo(300 * (Math.PI/180), 500, 500, 0, telemetry);
+        robot.moveTo(0 * (Math.PI/180), 200, 500, 0, telemetry);
+
+        robot.right_wiper.setPosition(rWiperGrab);
+        sleep(600);
+        robot.claw_right.setPosition(closeRight);
+        sleep(70);
+
+        robot.moveTo(180 * (Math.PI/180), 100, 500, 0, telemetry);
+        robot.brake();
+        robot.moveTo(100 * (Math.PI/180), 1000, 500, 0, telemetry);
         robot.brake();
 
+
+        // Common Part
         robot.claw_rot.setPosition(rotHover);
-        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.armUp(robot.armHover);
-
-        residualPower = 0.05;
-        sleep(200);
-        robot.claw_left.setPosition(openLeft);
-
-        robot.moveRotateTo(225, 335 * (Math.PI / 180), 0.15, false, 1.0, 0.42, telemetry);
-        robot.brake();
-        robot.setModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.setModes(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.moveTo(180 * (Math.PI/180), 1800, 1500, 1.3, telemetry);
-        robot.brake();
-        sleep(100);
-        robot.rotateTo(180, 800, 0.15, true, 1.3, telemetry);
-        robot.brake();
-
-        robot.armUp(armLow);
-        robot.claw_rot.setPosition(rotLow - 0.05);
-        robot.isHolding = false;
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        sleep(100);
-
-        robot.moveTo(265 * (Math.PI / 180), 80, 700, 1.25, telemetry);
-        robot.claw_right.setPosition(openRight);
-        sleep(350);
-
-        // Move Back
-        robot.moveTo(0 , 200, 800, 1.25, telemetry);
-        robot.claw_rot.setPosition(rotHover);
         robot.armUp(robot.armHover);
+        robot.setVelocities(new double[]{-400, 400, 400, 400});
+        sleep(100);
+        robot.claw_rot.setPosition(rotLow + 0.12);
 
-        ;
-        robot.moveTo(180 * (Math.PI / 180), 650, 900, 1.25, telemetry);
+        robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
+        robot.brake();
+        robot.rotateTo(92, 1500, 0.2, true, 1, telemetry);
         robot.brake();
 
+        robot.moveTo(90 * (Math.PI/180), 1180, 1500, 0.8, telemetry);
+        robot.brake();
+
+        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.armUp(robot.armHover + 100);
+        robot.arm.setPower(0.04);
+
+        robot.moveTo(0 * (Math.PI/180), 750, 1000, 0.8, telemetry);
+        robot.arm.setPower(0);
+        robot.brake();
+
+        robot.claw_right.setPosition(openRight);
+        robot.claw_left.setPosition(openLeft);
+        robot.right_wiper.setPosition(rWiperStow);
+        sleep(70);
+
+        robot.moveTo(245 * (Math.PI/180), 800, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(340 * (Math.PI/180), 950, 1000, 0.8, telemetry);
     }
 
     private void routineThree() {
@@ -418,7 +442,7 @@ public class AutoBR extends OpMode {
         robot.rotateTo(92, 1500, 0.2, true, 1, telemetry);
         robot.brake();
 
-        robot.moveTo(90 * (Math.PI/180), 1000, 1500, 0.8, telemetry);
+        robot.moveTo(90 * (Math.PI/180), 1280, 1500, 0.8, telemetry);
         robot.brake();
 
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -434,35 +458,11 @@ public class AutoBR extends OpMode {
         robot.right_wiper.setPosition(rWiperStow);
         sleep(70);
 
-        robot.moveTo(225 * (Math.PI/180), 600, 1000, 0.8, telemetry);
+        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(330 * (Math.PI/180), 750, 1000, 0.8, telemetry);
-
-
-
-
-
-
-//
-//        robot.armUp(armLow);
-//        robot.claw_rot.setPosition(rotLow - 0.08);
-//        robot.isHolding = false;
-//        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        sleep(100);
-//
-//        robot.moveTo(135 * (Math.PI / 180), 420, 1000, 1.25, telemetry);
-//        robot.claw_right.setPosition(openRight);
-//        sleep(400);
-//
-//        // Move Back
-//        robot.moveTo(0 , 200, 800, 1.25, telemetry);
-//        robot.claw_rot.setPosition(rotHover);
-//        robot.armUp(robot.armHover);
-//
-//        ;
-//        robot.moveTo(180 * (Math.PI / 180), 700, 900, 1.25, telemetry);
-//        robot.brake();
+        robot.moveTo(340 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
+
 
 
     private void initTfod() {

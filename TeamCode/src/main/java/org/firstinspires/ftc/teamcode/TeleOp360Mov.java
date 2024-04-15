@@ -62,10 +62,10 @@ public class TeleOp360Mov extends OpMode {
     public static float lWiperOpen = 1.0f;
     public static float lWiperGrab = 0.55f;
 
-    public static double rotGrab = 0.90;
+    public static double rotGrab = 0.98;
     public static double rotHover = rotGrab;
-    public static double rotHigh = 0.13;
-    public static double rotLow = 0.45;
+    public static double rotHigh = 0.22;
+    public static double rotLow = 0.54;
 
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
