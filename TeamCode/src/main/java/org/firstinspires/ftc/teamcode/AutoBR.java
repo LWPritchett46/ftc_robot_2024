@@ -149,7 +149,6 @@ public class AutoBR extends OpMode {
 
 
 
-        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {
