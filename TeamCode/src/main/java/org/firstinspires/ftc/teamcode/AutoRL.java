@@ -132,7 +132,7 @@ public class AutoRL extends OpMode {
 //        residualPower = 0.08;
 
 
-
+        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {
@@ -166,7 +166,7 @@ public class AutoRL extends OpMode {
 
     private void routineOne() {
 
-        robot.moveRotateTo(90, 24 * (Math.PI/180), 0.15, true, 1.0, 0.41, telemetry);
+        robot.moveRotateTo(90, 24 * (Math.PI/180), 0.15, false, 1.0, 0.41, telemetry);
 
         robot.fling.setPosition(0.1);
         sleep(50);
@@ -194,10 +194,10 @@ public class AutoRL extends OpMode {
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
-        robot.rotateTo(268, 1500, 0.2, true, 1, telemetry);
+        robot.rotateTo(268, 1500, 0.2, false, 1, telemetry);
         robot.brake();
 
-        robot.moveTo(270 * (Math.PI/180), 1280, 1500, 0.8, telemetry);
+        robot.moveTo(270 * (Math.PI/180), 1080, 1500, 0.8, telemetry);
         robot.brake();
 
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -220,7 +220,7 @@ public class AutoRL extends OpMode {
 
     private void routineTwo() {
 
-        robot.moveRotateTo(90, 10 * (Math.PI/180), 0.15, true, 1.0, 0.38, telemetry);
+        robot.moveRotateTo(90, 10 * (Math.PI/180), 0.15, false, 1.0, 0.38, telemetry);
 
         robot.fling.setPosition(0.1);
         sleep(50);
@@ -249,7 +249,7 @@ public class AutoRL extends OpMode {
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
-        robot.rotateTo(268, 1500, 0.2, true, 1, telemetry);
+        robot.rotateTo(268, 1500, 0.2, false, 1, telemetry);
         robot.brake();
 
         robot.moveTo(270 * (Math.PI/180), 1180, 1500, 0.8, telemetry);
@@ -275,7 +275,7 @@ public class AutoRL extends OpMode {
     }
 
     private void routineThree() {
-        robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, true, 1.0, 0.52, telemetry);
+        robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, false, 1.0, 0.52, telemetry);
         robot.moveTo(180 * (Math.PI/180), 400, 500, 0, telemetry);
 
         robot.fling.setPosition(0.1);
@@ -304,10 +304,10 @@ public class AutoRL extends OpMode {
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
-        robot.rotateTo(268, 1500, 0.2, true, 1, telemetry);
+        robot.rotateTo(268, 1500, 0.2, false, 1, telemetry);
         robot.brake();
 
-        robot.moveTo(270 * (Math.PI/180), 1080, 1500, 0.8, telemetry);
+        robot.moveTo(270 * (Math.PI/180), 1280, 1500, 0.8, telemetry);
         robot.brake();
 
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
