@@ -83,7 +83,7 @@ public class HardwarePushbot {
 
     static final double joystickExp = 1.5;
 
-    public static final int playOffset = -100;
+    public static final int playOffset = -350;
 
     boolean grabLeft, grabRight = true;
     public boolean autoClose = true;
@@ -92,7 +92,7 @@ public class HardwarePushbot {
     public boolean autoOnUndetectRight = false;
     public boolean autoOnUndetectLeft = false;
 
-    public int armHover = 1300 + playOffset;
+    public int armHover = 1200 + playOffset;
 
     public TeleOp360Mov.MovingState movingState = TeleOp360Mov.MovingState.NO_MOVE;
 
