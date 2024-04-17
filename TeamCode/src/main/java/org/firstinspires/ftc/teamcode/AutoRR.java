@@ -108,12 +108,17 @@ public class AutoRR extends OpMode {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         float highestConfidence = 0;
-        for (Recognition recognition : currentRecognitions){
-            if (recognition.getConfidence() > highestConfidence){
-                highestConfidence = recognition.getConfidence();
-                centerX = Math.round((recognition.getLeft() + recognition.getRight())/2);
-                quadrant = 1 + Math.floorDiv(centerX, (640/3));
+
+        if (!currentRecognitions.isEmpty()) {
+            for (Recognition recognition : currentRecognitions) {
+                if (recognition.getConfidence() > highestConfidence) {
+                    highestConfidence = recognition.getConfidence();
+                    centerX = Math.round((recognition.getLeft() + recognition.getRight()) / 2);
+                    quadrant = 1 + Math.floorDiv(centerX, (640 / 2));
+                }
             }
+        } else {
+            quadrant = 3;
         }
 
         telemetry.addData("Quadrant", quadrant);
