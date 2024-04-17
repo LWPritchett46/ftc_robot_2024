@@ -182,9 +182,9 @@ public class AutoBL extends OpMode {
         robot.arm.setPower(0);
         sleep(70);
 
-        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.moveTo(250 * (Math.PI/180), 1300, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(332 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
+        robot.moveTo(340 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
     private void routineTwo() {
@@ -226,9 +226,10 @@ public class AutoBL extends OpMode {
         robot.arm.setPower(0);
         sleep(70);
 
-        robot.moveTo(250 * (Math.PI/180), 1300, 1000, 0.8, telemetry);
+
+        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(340 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
+        robot.moveTo(332 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
 
