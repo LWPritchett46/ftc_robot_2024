@@ -172,6 +172,19 @@ public class AutoBL extends OpMode {
 
         robot.fling.setPosition(0.1);
         sleep(50);
+
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(0, 1800, 1000, 1.2, telemetry);
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(332 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
     private void routineTwo() {
@@ -181,14 +194,41 @@ public class AutoBL extends OpMode {
         robot.fling.setPosition(0.1);
         sleep(50);
 
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(345 * (Math.PI/180), 1700, 1000, 1.2, telemetry);
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(337 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
     private void routineThree() {
 
-        robot.moveRotateTo(90, 336 * (Math.PI/180), 0.15, false, 1.0, 0.41, telemetry);
+        robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, false, 1.0, 0.52, telemetry);
+        robot.moveTo(0 * (Math.PI/180), 400, 500, 0, telemetry);
 
         robot.fling.setPosition(0.1);
         sleep(50);
+
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(330 * (Math.PI/180), 1200, 1000, 1.2, telemetry);
+
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(250 * (Math.PI/180), 1300, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(340 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
 
