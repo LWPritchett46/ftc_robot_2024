@@ -139,7 +139,7 @@ public class AutoRR extends OpMode {
 //        residualPower = 0.08;
 
 
-        quadrant = 1;
+        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {
@@ -175,6 +175,19 @@ public class AutoRR extends OpMode {
 
         robot.fling.setPosition(0.1);
         sleep(50);
+
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(0, 1800, 1000, 1.2, telemetry);
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(115 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(28 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
     private void routineTwo() {
@@ -183,6 +196,19 @@ public class AutoRR extends OpMode {
 
         robot.fling.setPosition(0.1);
         sleep(50);
+
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(345 * (Math.PI/180), 1700, 1000, 1.2, telemetry);
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(115 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(28 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
 
     }
 
@@ -193,6 +219,20 @@ public class AutoRR extends OpMode {
 
         robot.fling.setPosition(0.1);
         sleep(50);
+
+        robot.armUp(robot.armHover + 50);
+        robot.arm.setPower(0.03);
+        robot.claw_rot.setPosition(rotLow + 0.12);
+
+        robot.moveTo(330 * (Math.PI/180), 1200, 1000, 1.2, telemetry);
+
+        robot.claw_left.setPosition(openLeft);
+        robot.arm.setPower(0);
+        sleep(70);
+
+        robot.moveTo(110 * (Math.PI/180), 1300, 1000, 0.8, telemetry);
+        robot.claw_rot.setPosition(rotGrab);
+        robot.moveTo(20 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }
 
 
