@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.closeRight;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openLeft;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.openRight;
+import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rWiperStow;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotGrab;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotHover;
 import static org.firstinspires.ftc.teamcode.TeleOp360Mov.rotLow;
@@ -143,7 +144,7 @@ public class AutoBL extends OpMode {
 //        residualPower = 0.08;
 
 
-        quadrant = 1;
+//        quadrant = 2;
 
         // Yo I fixed it
         switch (quadrant) {
@@ -173,44 +174,44 @@ public class AutoBL extends OpMode {
     private void routineOne() {
 
         robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, false, 1.0, 0.52, telemetry);
-        robot.moveTo(0 * (Math.PI/180), 600, 500, 0, telemetry);
+        robot.moveTo(0 * (Math.PI/180), 550, 500, 0, telemetry);
 
         robot.fling.setPosition(0.1);
         sleep(50);
 
         robot.armUp(robot.armHover + 120);
         robot.arm.setPower(0.03);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
 
-        robot.moveTo(0, 1300, 1000, 1.2, telemetry);
+        robot.moveTo(30 * (Math.PI/180), 1300, 1000, 1.2, telemetry);
         robot.claw_left.setPosition(openLeft);
         robot.arm.setPower(0);
         sleep(70);
 
-        robot.moveTo(250 * (Math.PI/180), 800, 1000, 0.8, telemetry);
+        robot.moveTo(260 * (Math.PI/180), 1200, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(340 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
+        robot.moveTo(340 * (Math.PI/180), 800, 1000, 0.8, telemetry);
     }
 
     private void routineTwo() {
 
-        robot.moveRotateTo(90, 350 * (Math.PI/180), 0.15, false, 1.0, 0.38, telemetry);
+        robot.moveRotateTo(90, 5 * (Math.PI/180), 0.15, false, 1.0, 0.38, telemetry);
 
         robot.fling.setPosition(0.1);
         sleep(50);
 
         robot.armUp(robot.armHover + 100);
         robot.arm.setPower(0.03);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
 
-        robot.moveTo(345 * (Math.PI/180), 1700, 1000, 1.2, telemetry);
+        robot.moveTo(25 * (Math.PI/180), 1300, 1000, 1.2, telemetry);
         robot.claw_left.setPosition(openLeft);
         robot.arm.setPower(0);
         sleep(70);
 
-        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.moveTo(260 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
-        robot.moveTo(337 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
+        robot.moveTo(347 * (Math.PI/180), 800, 1000, 0.8, telemetry);
     }
 
     private void routineThree() {
@@ -223,16 +224,17 @@ public class AutoBL extends OpMode {
 
         robot.armUp(robot.armHover + 100);
         robot.arm.setPower(0.03);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
+        robot.right_wiper.setPosition(rWiperStow);
 
-        robot.moveTo(330 * (Math.PI/180), 1200, 1000, 1.2, telemetry);
+        robot.moveTo(330 * (Math.PI/180), 1480, 1000, 1.2, telemetry);
 
         robot.claw_left.setPosition(openLeft);
         robot.arm.setPower(0);
         sleep(70);
 
 
-        robot.moveTo(245 * (Math.PI/180), 1000, 1000, 0.8, telemetry);
+        robot.moveTo(245 * (Math.PI/180), 1170, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
         robot.moveTo(332 * (Math.PI/180), 1150, 1000, 0.8, telemetry);
     }

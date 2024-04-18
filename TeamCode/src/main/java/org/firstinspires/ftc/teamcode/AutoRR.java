@@ -144,7 +144,7 @@ public class AutoRR extends OpMode {
 //        residualPower = 0.08;
 
 
-        quadrant = 3;
+//        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {

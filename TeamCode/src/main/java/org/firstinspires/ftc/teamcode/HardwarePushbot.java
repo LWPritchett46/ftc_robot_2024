@@ -83,7 +83,7 @@ public class HardwarePushbot {
 
     static final double joystickExp = 1.5;
 
-    public static final int playOffset = -350;
+    public static final int playOffset = -200;
 
     boolean grabLeft, grabRight = true;
     public boolean autoClose = true;
@@ -91,6 +91,7 @@ public class HardwarePushbot {
     public boolean detectedLeft = false;
     public boolean autoOnUndetectRight = false;
     public boolean autoOnUndetectLeft = false;
+    public boolean hardShut = true;
 
     public int armHover = 1200 + playOffset;
 
@@ -701,7 +702,7 @@ public class HardwarePushbot {
         float[] detectedHSV = new float[3];
         Color.colorToHSV(sensor.getNormalizedColors().toColor(), detectedHSV);
 //        return (detectedHSV[2] > 0.004 && isInRange(detectedHSV[0]));
-        return (detectedHSV[2] > 0.004 || sensor.getDistance(DistanceUnit.MM) < 30);
+        return (sensor.getDistance(DistanceUnit.MM) < 30);
 
     }
 
@@ -759,13 +760,13 @@ public class HardwarePushbot {
 //                    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //                    arm.setPower(0);
 //                }
-                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 1300){
+                if (arm.getCurrentPosition() >= TeleOp360Mov.lowerLimit + 800){
                     claw_rot.setPosition(TeleOp360Mov.rotLow);
                     movingState = TeleOp360Mov.MovingState.NO_MOVE;
                 }
                 break;
             case MOVE_DOWN:
-                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 150){
+                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 150 && arm.getCurrentPosition() > 500){
                     claw_rot.setPosition(rotGrab);
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -775,7 +776,7 @@ public class HardwarePushbot {
                     claw_left.setPosition(closeLeft);
                     arm.setPower(0);
                 }
-                if (arm.getCurrentPosition() <= 500){
+                else if (arm.getCurrentPosition() <= 500){
                     grabLeft = false;
                     grabRight = false;
                     autoClose = true;

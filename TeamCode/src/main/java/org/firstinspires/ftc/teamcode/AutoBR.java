@@ -325,7 +325,7 @@ public class AutoBR extends OpMode {
         robot.armUp(robot.armHover);
         robot.setVelocities(new double[]{-400, 400, 400, 400});
         sleep(100);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
@@ -380,7 +380,7 @@ public class AutoBR extends OpMode {
         robot.armUp(robot.armHover);
         robot.setVelocities(new double[]{-400, 400, 400, 400});
         sleep(100);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
@@ -415,7 +415,7 @@ public class AutoBR extends OpMode {
         robot.fling.setPosition(0.1);
         sleep(50);
 
-        robot.moveTo(0, 170, 500, 0, telemetry);
+        robot.moveTo(0, 250, 500, 0, telemetry);
 
         robot.right_wiper.setPosition(rWiperGrab);
         sleep(600);
@@ -434,7 +434,7 @@ public class AutoBR extends OpMode {
         robot.armUp(robot.armHover);
         robot.setVelocities(new double[]{-400, 400, 400, 400});
         sleep(100);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.16);
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();

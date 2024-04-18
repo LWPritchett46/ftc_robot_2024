@@ -62,10 +62,10 @@ public class TeleOp360Mov extends OpMode {
     public static float lWiperOpen = 1.0f;
     public static float lWiperGrab = 0.55f;
 
-    public static double rotGrab = 0.98;
+    public static double rotGrab = 0.94;
     public static double rotHover = rotGrab;
-    public static double rotHigh = 0.22;
-    public static double rotLow = 0.54;
+    public static double rotHigh = 0.11;
+    public static double rotLow = 0.41;
 
 
     public static int armHigh = 3550 + HardwarePushbot.playOffset;
@@ -73,7 +73,7 @@ public class TeleOp360Mov extends OpMode {
 
     public double residualPower = 0;
 
-    public static int upperLimit = 4000 + HardwarePushbot.playOffset;
+    public static int upperLimit = 3900 + HardwarePushbot.playOffset;
     public static int lowerLimit = 2600 + HardwarePushbot.playOffset;
     public boolean armDeployed = false;
 
@@ -90,7 +90,6 @@ public class TeleOp360Mov extends OpMode {
     public void init() {
         robot.init(hardwareMap);
         armHigh = robot.armHover + 2300;
-        robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        routines = new AsyncRoutines(0, robot, this);
 
@@ -155,8 +154,11 @@ public class TeleOp360Mov extends OpMode {
             if (robot.grabRight){
                 // Open Position
                 robot.claw_right.setPosition(openRight);
+                robot.autoOnUndetectRight = !armDeployed && robot.autoClose && !robot.hardShut;
                 robot.autoClose = false;
-                robot.autoOnUndetectRight = !armDeployed;
+                if (robot.hardShut){
+                    robot.grabRight = !robot.grabRight;
+                }
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() - 0.05);
 
             }
@@ -172,8 +174,11 @@ public class TeleOp360Mov extends OpMode {
             if (robot.grabLeft){
                 // Open position
                 robot.claw_left.setPosition(openLeft);
+                robot.autoOnUndetectLeft = !armDeployed && robot.autoClose && !robot.hardShut;
                 robot.autoClose = false;
-                robot.autoOnUndetectLeft = !armDeployed;
+                if (robot.hardShut){
+                    robot.grabLeft = !robot.grabLeft;
+                }
                 //robot.claw_rot.setPosition(robot.claw_rot.getPosition() + 0.05);
 
             }
@@ -219,14 +224,14 @@ public class TeleOp360Mov extends OpMode {
         }
 
 
-        if (gamepad2.dpad_left){
-            // Release Direction
-            robot.launcher.setPosition(1);
-        }
-        if (gamepad2.dpad_right){
-            // Release Direction
-            robot.launcher.setPosition(-1);
-        }
+//        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)){
+//            // Release Direction
+//            robot.launcher.setPosition(1);
+//        }
+//        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
+//            // Release Direction
+//            robot.launcher.setPosition(0);
+//        }
 
 //        if (gamepad2.right_trigger >= 0.5 && rTriggerTimer == 0){
 //            robot.launcher.setPosition(robot.launcher.getPosition() + 0.05);
@@ -383,7 +388,13 @@ public class TeleOp360Mov extends OpMode {
         }
 
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
+            robot.hardShut = false;
             robot.autoClose = true;
+        }
+
+        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            robot.hardShut = true;
+            robot.autoClose = false;
         }
 
 
@@ -406,6 +417,7 @@ public class TeleOp360Mov extends OpMode {
             robot.autoClose = false;
             robot.brake();
             robot.armUp(armHigh - 1000);
+            robot.claw_rot.setPosition(rotHigh);
         }
 
         // Purge Intake ----------------------------------------------------------------------------
@@ -487,7 +499,8 @@ public class TeleOp360Mov extends OpMode {
         Color.colorToHSV(robot.left_sensor.getNormalizedColors().toColor(), lDetectedHSV);
         Color.colorToHSV(robot.right_sensor.getNormalizedColors().toColor(), rDetectedHSV);
 
-
+        telemetry.addLine();
+        telemetry.addData("hard shut", robot.hardShut);
         telemetry.addData("Left Sensor value", lDetectedHSV[2]);
         telemetry.addData("Right Sensor value", rDetectedHSV[2]);
 
@@ -508,7 +521,7 @@ public class TeleOp360Mov extends OpMode {
             robot.autoOnUndetectLeft = false;
         }
 
-        if (robot.autoClose) {
+        if (robot.autoClose && !robot.hardShut) {
             robot.grabRight = robot.detectedRight;
             robot.grabLeft = robot.detectedLeft;
         }
@@ -551,15 +564,16 @@ public class TeleOp360Mov extends OpMode {
 
         if (rTriggerReader1.wasJustPressed()) {
 
-            if (wiperOpenRight) {
-                robot.right_wiper.setPosition(rWiperGrab);
-            } else {
-                robot.right_wiper.setPosition(rWiperOpen);
-            }
-            wiperOpenRight = !wiperOpenRight;
+//            if (wiperOpenRight) {
+//                robot.right_wiper.setPosition(rWiperGrab);
+//            } else {
+//                robot.right_wiper.setPosition(rWiperOpen);
+//            }
+//            wiperOpenRight = !wiperOpenRight;
+            robot.launcher.setPosition(1);
         }
 //
-//        if (lTriggerReader1.wasJustPressed()) {
+        if (lTriggerReader1.wasJustPressed()) {
 //
 //            if (wiperOpenLeft) {
 //                robot.left_wiper.setPosition(lWiperGrab);
@@ -567,7 +581,8 @@ public class TeleOp360Mov extends OpMode {
 //                robot.left_wiper.setPosition(lWiperOpen);
 //            }
 //            wiperOpenLeft = !wiperOpenLeft;
-//        }
+        robot.launcher.setPosition(0);
+        }
 
 
         // Toggle Timers & HoldPos -----------------------------------------------------------------

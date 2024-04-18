@@ -137,7 +137,7 @@ public class AutoRL extends OpMode {
 //        residualPower = 0.08;
 
 
-        quadrant = 3;
+//        quadrant = 3;
 
         // Yo I fixed it
         switch (quadrant) {
@@ -280,7 +280,7 @@ public class AutoRL extends OpMode {
     }
 
     private void routineThree() {
-        robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, false, 1.0, 0.52, telemetry);
+        robot.moveRotateTo(90, 0 * (Math.PI/180), 0.15, false, 1.0, 0.51, telemetry);
         robot.moveTo(180 * (Math.PI/180), 400, 500, 0, telemetry);
 
         robot.fling.setPosition(0.1);
@@ -305,21 +305,21 @@ public class AutoRL extends OpMode {
         robot.armUp(robot.armHover);
         robot.setVelocities(new double[]{-400, 400, 400, 400});
         sleep(100);
-        robot.claw_rot.setPosition(rotLow + 0.12);
+        robot.claw_rot.setPosition(rotLow + 0.18);
 
         robot.moveTo(180 * (Math.PI/180), 3800, 3000, 0.8, telemetry);
         robot.brake();
         robot.rotateTo(268, 1500, 0.2, false, 1, telemetry);
         robot.brake();
 
-        robot.moveTo(270 * (Math.PI/180), 1280, 1500, 0.8, telemetry);
+        robot.moveTo(270 * (Math.PI/180), 1850, 1500, 0.8, telemetry);
         robot.brake();
 
         robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.armUp(robot.armHover + 100);
+        robot.armUp(robot.armHover + 120);
         robot.arm.setPower(0.04);
 
-        robot.moveTo(0 * (Math.PI/180), 750, 1000, 0.8, telemetry);
+        robot.moveTo(0 * (Math.PI/180), 650, 1000, 0.8, telemetry);
         robot.arm.setPower(0);
         robot.brake();
 
@@ -328,7 +328,7 @@ public class AutoRL extends OpMode {
         robot.right_wiper.setPosition(rWiperStow);
         sleep(70);
 
-        robot.moveTo(115 * (Math.PI/180), 600, 1000, 0.8, telemetry);
+        robot.moveTo(135 * (Math.PI/180), 900, 1000, 0.8, telemetry);
         robot.claw_rot.setPosition(rotGrab);
         robot.moveTo(20 * (Math.PI/180), 750, 1000, 0.8, telemetry);
     }
