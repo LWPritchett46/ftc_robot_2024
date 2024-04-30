@@ -39,13 +39,13 @@ import java.util.List;
  *      ( ) Code the Left routines
  *      ( ) Code a routine for just parking
  *      (X) Figure out a way to get detection to not be as sensitive to light (watch how other teams are doing it)
- *      ( ) Optimize routines to fit within 30s:
- *          ( ) Don't give a fuck about AprilTags
- *          ( ) Fix intake_rot Servo
- *          ( ) Can we start with claw grabbing pixels
- *          ( ) If so, can we unfold as we move
- *          ( ) Shave off unnecessary pauses
- *          ( ) What's the greatest speed we can do without sacrificing accuracy?
+ *      (X) Optimize routines to fit within 30s:
+ *          (X) Don't give a fuck about AprilTags
+ *          (X) Fix intake_rot Servo
+ *          (X) Can we start with claw grabbing pixels
+ *          (X) If so, can we unfold as we move
+ *          (X) Shave off unnecessary pauses
+ *          (X) What's the greatest speed we can do without sacrificing accuracy?
  *
  */
 
