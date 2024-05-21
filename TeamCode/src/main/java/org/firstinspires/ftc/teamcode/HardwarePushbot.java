@@ -83,7 +83,7 @@ public class HardwarePushbot {
 
     static final double joystickExp = 1.5;
 
-    public static final int playOffset = -200;
+    public static final int playOffset = -300;
 
     boolean grabLeft, grabRight = true;
     public boolean autoClose = true;
@@ -766,7 +766,7 @@ public class HardwarePushbot {
                 }
                 break;
             case MOVE_DOWN:
-                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 150 && arm.getCurrentPosition() > 500){
+                if (arm.getCurrentPosition() <= TeleOp360Mov.lowerLimit - 150 && arm.getCurrentPosition() > 600 + playOffset){
                     claw_rot.setPosition(rotGrab);
                     arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -776,7 +776,7 @@ public class HardwarePushbot {
                     claw_left.setPosition(closeLeft);
                     arm.setPower(0);
                 }
-                else if (arm.getCurrentPosition() <= 500){
+                else if (arm.getCurrentPosition() <= 600 + playOffset){
                     grabLeft = false;
                     grabRight = false;
                     autoClose = true;
